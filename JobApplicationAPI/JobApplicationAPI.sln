@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobApplicationAPI", "JobApplicationAPI.csproj", "{E450C0A4-E8A7-44CC-AF26-7F6B986F8CBD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E450C0A4-E8A7-44CC-AF26-7F6B986F8CBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E450C0A4-E8A7-44CC-AF26-7F6B986F8CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E450C0A4-E8A7-44CC-AF26-7F6B986F8CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E450C0A4-E8A7-44CC-AF26-7F6B986F8CBD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B948A6D3-5A32-4D12-B9E8-848D1E9C44E4}
+	EndGlobalSection
+EndGlobal
