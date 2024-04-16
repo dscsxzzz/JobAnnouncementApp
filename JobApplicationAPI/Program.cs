@@ -1,3 +1,8 @@
+using GenericServices.Setup;
+using JobApplicationAPI.Shared.Models.Dtos;
+using JobApplicationAPI.Shared.Models.Entities;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +11,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.GenericServicesSimpleSetup<JobAppContext>(
+    Assembly.GetAssembly(typeof(UserReadDto)));
 
 var app = builder.Build();
 
