@@ -4,7 +4,6 @@ WORKDIR /app
 
 # Copy the JobAppApi folder into the container
 COPY . ./
-
 # Restore dependencies
 RUN dotnet restore "JobApplicationAPI.csproj"
 
@@ -16,3 +15,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "JobApplicationAPI.dll"]
+EXPOSE 80

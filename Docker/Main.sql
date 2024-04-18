@@ -81,14 +81,14 @@ CREATE TABLE "User"
 		Default NULL,
 	"Email" VARCHAR(50) NOT NULL,
 	"PhoneNumber" VARCHAR(15) NOT NULL,
-	"SkillsId" Integer NOT NULL REFERENCES "Skills"("SkillsId")
+	"SkillsId" Integer UNIQUE NOT NULL REFERENCES "Skills"("SkillsId")
 );
 
 CREATE TABLE "JobPosting"
 (
 	"JobPostingId" Serial PRIMARY KEY,
 	"CategoryId" VARCHAR(20) NOT NULL,
-	"SkillsId" Integer NOT NULL REFERENCES "Skills"("SkillsId"),
+	"SkillsId" Integer UNIQUE NOT NULL REFERENCES "Skills"("SkillsId"),
 	"CompanyId" Integer NOT NULL REFERENCES "Company"("CompanyId"),
 	"SalaryMin" Integer NOT NULL,
 	"SalaryMax" Integer NOT NULL,
@@ -110,8 +110,8 @@ EXECUTE FUNCTION set_timestamp();
 
 
 ALTER TABLE "Skills"
-add "UserId" Integer REFERENCES "User"("UserId"),
-add "JobPostingId" Integer REFERENCES "JobPosting"("JobPostingId");
+add "UserId" Integer UNIQUE REFERENCES "User"("UserId"),
+add "JobPostingId" Integer UNIQUE REFERENCES "JobPosting"("JobPostingId");
 
 CREATE TABLE "Application"
 (
@@ -120,5 +120,11 @@ CREATE TABLE "Application"
 	"JobPostingId" Integer NOT NULL REFERENCES "JobPosting"("JobPostingId"),
 	"ApplicationStatusId" Integer NOT NULL 
 		REFERENCES "ApplicationStatus"("ApplicationStatusId")
-		DEFAULT 1
+		DEFAULT 1,
+	"DesiredSallaryMin" Integer NOT NULL,
+	"DesiredSallaryMax" Integer NOT NULL,
+	"ExperienceYears" Float NOT NULL,
+	"WhenCanStart" VARCHAR(30) NOT NULL,
+	"PreviousWorkPlace" VARCHAR(30) NOT NULL,
+	"MessageToRecruiter" VARCHAR(500) NOT NULL
 );

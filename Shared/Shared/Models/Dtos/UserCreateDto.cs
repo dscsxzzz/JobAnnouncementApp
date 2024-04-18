@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+using GenericServices;
+using Models.Entities;
+using System.Text.Json.Serialization;
 
-namespace Models.Entities;
+namespace Models.Dtos;
 
-public partial class User
+public partial class UserCreateDto : ILinkToEntity<User>
 {
+    [JsonIgnore]
     public int UserId { get; set; }
 
     public string Name { get; set; } = null!;
@@ -26,12 +28,4 @@ public partial class User
     public string PhoneNumber { get; set; } = null!;
 
     public int SkillsId { get; set; }
-
-    public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
-
-    public virtual Company? Company { get; set; }
-
-    public virtual Skill Skills { get; set; } = null!;
-
-    public virtual UserStatus UserStatus { get; set; } = null!;
 }

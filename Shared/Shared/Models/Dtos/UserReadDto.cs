@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+using GenericServices;
+using Models.Entities;
 
-namespace Models.Entities;
+namespace Models.Dtos;
 
-public partial class User
+public partial class UserReadDto : ILinkToEntity<User>
 {
     public int UserId { get; set; }
 
@@ -27,11 +27,7 @@ public partial class User
 
     public int SkillsId { get; set; }
 
-    public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
-
     public virtual Company? Company { get; set; }
-
-    public virtual Skill Skills { get; set; } = null!;
 
     public virtual UserStatus UserStatus { get; set; } = null!;
 }

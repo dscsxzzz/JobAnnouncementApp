@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Models.Entities;
 
-namespace JobApplicationAPI.Shared.Models.Entities;
+namespace JobApplicationAPI.Shared.Database;
 
 public partial class JobAppContext : DbContext
 {
@@ -44,6 +43,9 @@ public partial class JobAppContext : DbContext
             entity.ToTable("Application");
 
             entity.Property(e => e.ApplicationStatusId).HasDefaultValue(1);
+            entity.Property(e => e.MessageToRecruiter).HasMaxLength(500);
+            entity.Property(e => e.PreviousWorkPlace).HasMaxLength(30);
+            entity.Property(e => e.WhenCanStart).HasMaxLength(30);
 
             entity.HasOne(d => d.ApplicationStatus).WithMany(p => p.Applications)
                 .HasForeignKey(d => d.ApplicationStatusId)
@@ -104,6 +106,8 @@ public partial class JobAppContext : DbContext
 
             entity.ToTable("JobPosting");
 
+            entity.HasIndex(e => e.SkillsId, "JobPosting_SkillsId_key").IsUnique();
+
             entity.Property(e => e.CategoryId).HasMaxLength(20);
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.Experience).HasMaxLength(7);
@@ -120,8 +124,8 @@ public partial class JobAppContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("JobPosting_CompanyId_fkey");
 
-            entity.HasOne(d => d.Skills).WithMany(p => p.JobPostings)
-                .HasForeignKey(d => d.SkillsId)
+            entity.HasOne(d => d.Skills).WithOne(p => p.JobPosting)
+                .HasForeignKey<JobPosting>(d => d.SkillsId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("JobPosting_SkillsId_fkey");
         });
@@ -129,6 +133,10 @@ public partial class JobAppContext : DbContext
         modelBuilder.Entity<Skill>(entity =>
         {
             entity.HasKey(e => e.SkillsId).HasName("Skills_pkey");
+
+            entity.HasIndex(e => e.JobPostingId, "Skills_JobPostingId_key").IsUnique();
+
+            entity.HasIndex(e => e.UserId, "Skills_UserId_key").IsUnique();
 
             entity.Property(e => e.Skill1).HasMaxLength(20);
             entity.Property(e => e.Skill10).HasMaxLength(20);
@@ -141,12 +149,12 @@ public partial class JobAppContext : DbContext
             entity.Property(e => e.Skill8).HasMaxLength(20);
             entity.Property(e => e.Skill9).HasMaxLength(20);
 
-            entity.HasOne(d => d.JobPosting).WithMany(p => p.SkillsNavigation)
-                .HasForeignKey(d => d.JobPostingId)
+            entity.HasOne(d => d.JobPosting).WithOne(p => p.Skills)
+                .HasForeignKey<Skill>(d => d.JobPostingId)
                 .HasConstraintName("Skills_JobPostingId_fkey");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Skills)
-                .HasForeignKey(d => d.UserId)
+            entity.HasOne(d => d.User).WithOne(p => p.Skills)
+                .HasForeignKey<Skill>(d => d.UserId)
                 .HasConstraintName("Skills_UserId_fkey");
         });
 
@@ -155,6 +163,8 @@ public partial class JobAppContext : DbContext
             entity.HasKey(e => e.UserId).HasName("User_pkey");
 
             entity.ToTable("User");
+
+            entity.HasIndex(e => e.SkillsId, "User_SkillsId_key").IsUnique();
 
             entity.Property(e => e.Address).HasMaxLength(20);
             entity.Property(e => e.Email).HasMaxLength(50);
@@ -168,8 +178,8 @@ public partial class JobAppContext : DbContext
                 .HasForeignKey(d => d.CompanyId)
                 .HasConstraintName("User_CompanyId_fkey");
 
-            entity.HasOne(d => d.SkillsNavigation).WithMany(p => p.Users)
-                .HasForeignKey(d => d.SkillsId)
+            entity.HasOne(d => d.Skills).WithOne(p => p.User)
+                .HasForeignKey<User>(d => d.SkillsId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("User_SkillsId_fkey");
 

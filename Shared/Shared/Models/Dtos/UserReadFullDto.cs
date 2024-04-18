@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+using GenericServices;
+using Models.Entities;
 
-namespace Models.Entities;
+namespace Models.Dtos;
 
-public partial class User
+public partial class UserReadFullDto : ILinkToEntity<User>
 {
     public int UserId { get; set; }
 
