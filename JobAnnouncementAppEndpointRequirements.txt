@@ -1,0 +1,124 @@
+baseUrl: localhost
+
+//////// User Endpoints://////////////
+[GET]
+baseUrl/users[query params: name?:string, skills?[up to 10]:int, page:int] - 
+
+returns List Of 10 Users, each page contains 10 Users (UserReadDto).
+name param will filter by Name/LastName(not ordered!)
+skills will filter by Skills
+
+[POST]
+baseUrl/users
+
+Creates a new User. 
+Adds to Skills table a row woth skills of this User. Should be implemented as a dropdown/list menu
+
+[PUT]
+baseUrl/users/{id} 
+
+Updates a User info(not the password field! Requires JWT)
+
+[DELETE]
+baseUrl/users/{id} 
+
+Deletes User (Requires JWT/Admin Account)
+
+///////////////// Auth Endpoints: /////////////////
+
+[PUT]
+baseUrl/auth/{userId}/password-change 
+
+Updates User password(Requires JWT)
+
+[PUT]
+baseUrl/auth/password-forgotten U
+
+pdates User password if forgotten(requires e-mail confirmation).
+
+[POST]
+baseUrl/auth/login 
+
+Login Into Account(returns all the neccessary data accessible only for User)
+
+
+////////////////// JobPosting Endpoints://///////////
+
+[GET]
+baseUrl/job-postings[query params: skills?[up to 10 params]:string[drop-down], sallaryMin?:int, listed?:date, location?:string, hybrid?:bool, remote?:bool, page:int]
+
+returns a List of 20 JobPostingsReadDto
+skills param filters by Skills
+sallaryMin filters by SallaryMin.Returns JobPosting with sallaryMin-sallaryMax range that contains sallaryMin param.
+listed filters by date
+location filters by location
+hybrib/remote filters by hybrid/remote properties
+page gets next page. do not increment manualy. if exceeded the max value return first page with no params.
+
+[GET]
+baseUrl/job-postings/{id}
+
+returns a JobPostingReadFullDto 
+
+(Only User.UserStatus == Recruiter/Employer can create. Requires JWT)
+[POST]
+baseUrl/job-postings 
+
+Creates a new JobPosting
+
+(Only User.UserStatus == Recruiter/Employer. Requires JWT)
+[PUT]
+baseUrl/job-postings/{id}
+
+updates a JobPosting info
+
+(Only User.UserStatus == Recruiter/Employer. Requires JWT/Admin Account)
+[DELETE]
+baseUrl/job-postings/{id}
+
+deletes Job Posting.
+
+/////////////////// Application Endpoints: /////////////////////
+
+(Accessible only for User with userId. requires JWT)
+[GET]
+baseUrl/application/{userId}
+
+returns a list of ApplicationReadDto
+
+(Accessible only for User with userId. requires JWT)
+[GET]
+baseUrl/application/{userId}/{applicationId}
+
+returns a ApplicationReadFullDto
+
+(Accessible from the button on the JobPosting - "APPLY")
+[POST]
+baseUrl/application
+
+Creates Application
+
+(Accessible ONLY FOR Related JobPosting Owner User)
+[PUT]
+baseUrl/application/{id}
+
+Updates ApplicationStatusId
+Sends e-mail to UserId of status update.
+
+(ONLY FOR ADMINISTRATORS)
+[DELETE]
+baseUrl/application/{Id}
+
+Deletes Application
+
+
+
+
+
+
+
+
+
+
+
+
