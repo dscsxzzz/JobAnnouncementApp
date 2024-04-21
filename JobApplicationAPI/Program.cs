@@ -1,12 +1,16 @@
 using GenericServices.Setup;
 using JobApplicationAPI.Shared.Database;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Models.Dtos;
 using Models.Validation;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using FluentValidation;
+using Models.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +28,44 @@ builder.Services.AddFluentValidationAutoValidation()
     .AddValidatorsFromAssemblyContaining(
         typeof(UserReadDto)
     );
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "JobApplicationProjectIss",
+        ValidAudience = "JobApplicationProjectAudience",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JobApplicationProject")),
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+            {
+                context.Response.Headers.Add("Token-Expired", "true");
+            }
+            return Task.CompletedTask;
+        }
+    };
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("UserOnly", policy => policy.RequireRole("JobSeeker"));
+    options.AddPolicy("RecruiterOnly", policy => policy.RequireRole("Recruiter"));
+    options.AddPolicy("EmployerOnly", policy => policy.RequireRole("Employer"));
+});
 
 
 var app = builder.Build();

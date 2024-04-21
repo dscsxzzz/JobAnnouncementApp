@@ -1,5 +1,6 @@
 using GenericServices;
 using JobApplicationAPI.Shared.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models.Dtos;
@@ -7,6 +8,7 @@ using WebCommon.Database;
 
 namespace JobApplicationAPI.Controllers;
 
+[Authorize(Policy = "UserOnly")]
 [ApiController]
 [Route("users")]
 public class UserController : ControllerWithDatabaseAccess
