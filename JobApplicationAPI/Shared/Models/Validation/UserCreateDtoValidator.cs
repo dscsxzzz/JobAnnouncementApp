@@ -15,23 +15,56 @@ public partial class UserCreateDtoValidator : AbstractValidator<UserCreateDto>
             .MaximumLength(20);
         RuleFor(x => x.Password)
             .NotEmpty()
+            .MinimumLength(10)
+            .Must(ContainsDigit)
+            .WithMessage("Password must contain a digit")
+            .Must(ContainsSpecialCharacter)
+            .WithMessage("Password must contain a special character")
             .MaximumLength(100);
         RuleFor(x => x.Address)
             .NotEmpty()
             .MaximumLength(20);
         RuleFor(x => x.ResumeId)
             .GreaterThan(0);
-        RuleFor(x => x.UserStatusId)
-            .GreaterThan(1);
+        RuleFor(x => x.UserStatus)
+            .MaximumLength(10);
         RuleFor(x => x.CompanyId)
             .GreaterThan(1);
         RuleFor(x => x.Email)
             .NotEmpty()
+            .EmailAddress()
             .MaximumLength(50);
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
             .MaximumLength(15);
-        RuleFor(x => x.SkillsId)
-            .GreaterThan(1);
+        When(x => x.SkillsId is not null, () =>
+        {
+            RuleFor(x => x.SkillsId)
+                .GreaterThan(0);
+        });
+    }
+
+    static bool ContainsDigit(string input)
+    {
+        foreach (char c in input)
+        {
+            if (char.IsDigit(c))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static bool ContainsSpecialCharacter(string input)
+    {
+        foreach (char c in input)
+        {
+            if (!char.IsLetterOrDigit(c))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

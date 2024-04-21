@@ -19,7 +19,7 @@ public partial class UserUpdateDto : ILinkToEntity<User>
 
     public int ResumeId { get; set; }
 
-    public int UserStatusId { get; set; }
+    public string UserStatus { get; set; } = null!;
 
     public int? CompanyId { get; set; }
 
@@ -27,5 +27,5 @@ public partial class UserUpdateDto : ILinkToEntity<User>
 
     public string PhoneNumber { get; set; } = null!;
 
-    public int SkillsId { get; set; }
+    public int? SkillsId { get; set; }
 }

@@ -3,7 +3,7 @@ using Models.Dtos;
 
 namespace Models.Validation;
 
-public partial class UserUpdateDtoValidator : AbstractValidator<UserCreateDto>
+public partial class UserUpdateDtoValidator : AbstractValidator<UserUpdateDto>
 {
     public UserUpdateDtoValidator()
     {
@@ -23,8 +23,8 @@ public partial class UserUpdateDtoValidator : AbstractValidator<UserCreateDto>
             .MaximumLength(20);
         RuleFor(x => x.ResumeId)
             .GreaterThan(0);
-        RuleFor(x => x.UserStatusId)
-            .GreaterThan(1);
+        RuleFor(x => x.UserStatus)
+            .MaximumLength(10);
         RuleFor(x => x.CompanyId)
             .GreaterThan(1);
         RuleFor(x => x.Email)
@@ -33,7 +33,10 @@ public partial class UserUpdateDtoValidator : AbstractValidator<UserCreateDto>
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
             .MaximumLength(15);
-        RuleFor(x => x.SkillsId)
-            .GreaterThan(1);
+        When(x => x.SkillsId is not null, () =>
+        {
+            RuleFor(x => x.SkillsId)
+                .GreaterThan(0);
+        });
     }
 }
