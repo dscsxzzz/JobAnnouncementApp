@@ -8,7 +8,6 @@ using WebCommon.Database;
 
 namespace JobApplicationAPI.Controllers;
 
-[Authorize(Policy = "UserOnly")]
 [ApiController]
 [Route("users")]
 public class UserController : ControllerWithDatabaseAccess
@@ -42,15 +41,9 @@ public class UserController : ControllerWithDatabaseAccess
                 )
                 .ToList();
 
+        MongoDbFileService db = new MongoDbFileService();
+        db.TryConnect();
+
         return Ok(users);
     }
-    [HttpPost]
-    public async Task<ActionResult<UserCreateDto>> AddUserAsync([FromBody] UserCreateDto userCreateDto)
-    {
-        var response = await _service
-            .CreateAndSaveAsync(userCreateDto);
-
-        return Ok(response);
-    }
-
 }

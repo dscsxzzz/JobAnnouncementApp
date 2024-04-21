@@ -8,12 +8,6 @@ returns List Of 10 Users, each page contains 10 Users (UserReadDto).
 name param will filter by Name/LastName(not ordered!)
 skills will filter by Skills
 
-[POST]
-baseUrl/users
-
-Creates a new User. 
-Adds to Skills table a row woth skills of this User. Should be implemented as a dropdown/list menu
-
 [PUT]
 baseUrl/users/{id} 
 
@@ -32,14 +26,19 @@ baseUrl/auth/{userId}/password-change
 Updates User password(Requires JWT)
 
 [PUT]
-baseUrl/auth/password-forgotten U
+baseUrl/auth/password-forgotten
 
-pdates User password if forgotten(requires e-mail confirmation).
+Updates User password if forgotten(requires e-mail confirmation).
 
 [POST]
 baseUrl/auth/login 
 
-Login Into Account(returns all the neccessary data accessible only for User)
+Login Into Account(returns JWT)
+
+[POST]
+baseUrl/auth/register 
+
+Register Account
 
 
 ////////////////// JobPosting Endpoints://///////////

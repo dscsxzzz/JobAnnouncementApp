@@ -15,7 +15,7 @@ public partial class UserReadFullDto : ILinkToEntity<User>
 
     public int ResumeId { get; set; }
 
-    public int UserStatusId { get; set; }
+    public string UserStatus { get; set; } = null!;
 
     public int? CompanyId { get; set; }
 
@@ -23,13 +23,11 @@ public partial class UserReadFullDto : ILinkToEntity<User>
 
     public string PhoneNumber { get; set; } = null!;
 
-    public int SkillsId { get; set; }
+    public int? SkillsId { get; set; }
 
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
     public virtual Company? Company { get; set; }
 
-    public virtual Skill Skills { get; set; } = null!;
-
-    public virtual UserStatus UserStatus { get; set; } = null!;
+    public virtual Skill? Skills { get; set; }
 }

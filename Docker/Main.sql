@@ -7,16 +7,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
-CREATE TABLE "UserStatus"
-(
-	"UserStatusId" Serial PRIMARY KEY,
-	"StatusName" VARCHAR(20) NOT NULL
-);
-
-INSERT INTO "UserStatus"("StatusName")
-VALUES('JobSeeker'),('Employer'),('Admin'),('Recruiter');
-
 CREATE TABLE "ApplicationStatus"
 (
 	"ApplicationStatusId" Serial PRIMARY KEY,
@@ -73,15 +63,13 @@ CREATE TABLE "User"
 	"Password" VARCHAR(100) NOT NULL,
 	"Address" VARCHAR(20) NOT NULL,
 	"ResumeId" Integer NOT NULL,
-	"UserStatusId" Integer NOT NULL 
-		REFERENCES "UserStatus"("UserStatusId")
-		Default 1,
+	"UserStatus" VARCHAR(10),
 	"CompanyId" Integer 
 		REFERENCES "Company"("CompanyId")
 		Default NULL,
 	"Email" VARCHAR(50) NOT NULL,
 	"PhoneNumber" VARCHAR(15) NOT NULL,
-	"SkillsId" Integer UNIQUE NOT NULL REFERENCES "Skills"("SkillsId")
+	"SkillsId" Integer UNIQUE REFERENCES "Skills"("SkillsId")
 );
 
 CREATE TABLE "JobPosting"
