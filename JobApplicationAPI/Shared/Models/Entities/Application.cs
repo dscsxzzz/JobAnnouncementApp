@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Models.Entities;
+namespace JobApplicationAPI.Shared.Models.Entities;
 
 public partial class Application
 {

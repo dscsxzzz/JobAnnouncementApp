@@ -8,6 +8,7 @@ using WebCommon.Database;
 
 namespace JobApplicationAPI.Controllers;
 
+[Authorize(Policy = "UserOnly")]
 [ApiController]
 [Route("users")]
 public class UserController : ControllerWithDatabaseAccess
@@ -21,25 +22,29 @@ public class UserController : ControllerWithDatabaseAccess
 
 
     [HttpGet]
-    public async Task<ActionResult<List<UserReadDto>>> ListUsersAsync([FromQuery] string? name, [FromQuery] int page = 1)
+    public async Task<ActionResult<List<UserReadDto>>> ListUsersAsync(
+        [FromQuery] string? name, [FromQuery] List<int>? skills,
+        [FromQuery] int page = 1
+    )
     {
-        var users = await _service
-            .ReadManyNoTracked<UserReadDto>()
-            .ToListAsync();
-
-        users = users
-            .Skip((page - 1) * 10)
-            .Take(10)
-            .ToList();
-
-        if(!string.IsNullOrEmpty(name))
-            users = users
+        List<UserReadDto> users = new();
+        if (!string.IsNullOrEmpty(name))
+            users = await _service
+                .ReadManyNoTracked<UserReadDto>()
+                .Skip((page - 1) * 10)
+                .Take(10)
                 .Where(
-                    user => user.Name.Contains(name) || 
-                    user.Email.Contains(name) ||
-                    user.LastName.Contains(name)
+                    user => (user.Name.Contains(name) ||
+                    user.LastName.Contains(name))
                 )
-                .ToList();
+                .ToListAsync();
+        else
+            users = await _service
+                .ReadManyNoTracked<UserReadDto>()
+                .Skip((page - 1) * 10)
+                .Take(10)
+                .ToListAsync();
+
 
         MongoDbFileService db = new MongoDbFileService();
         db.TryConnect();

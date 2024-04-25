@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Models.Entities;
+namespace JobApplicationAPI.Shared.Models.Entities;
 
 public partial class User
 {
@@ -15,9 +15,9 @@ public partial class User
 
     public string Address { get; set; } = null!;
 
-    public int ResumeId { get; set; }
+    public int? ResumeId { get; set; }
 
-    public string UserStatus { get; set; } = null!;
+    public string? UserStatus { get; set; }
 
     public int? CompanyId { get; set; }
 
@@ -25,11 +25,13 @@ public partial class User
 
     public string PhoneNumber { get; set; } = null!;
 
-    public int? SkillsId { get; set; }
+    public int? UserSkillId { get; set; }
 
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
     public virtual Company? Company { get; set; }
 
-    public virtual Skill Skills { get; set; } = null!;
+    public virtual ICollection<JobPosting> JobPostings { get; set; } = new List<JobPosting>();
+
+    public virtual UserSkill? UserSkill { get; set; }
 }

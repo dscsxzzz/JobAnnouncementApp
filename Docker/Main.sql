@@ -16,34 +16,70 @@ CREATE TABLE "ApplicationStatus"
 INSERT INTO "ApplicationStatus"("StatusName")
 VALUES('Sent'),('Opened'),('Rejected'),('Offer');
 
-CREATE TABLE "Skills"
+CREATE TABLE "Category"
 (
-	"SkillsId" Serial PRIMARY KEY,
-	"Skill1" VARCHAR(20),
-	"Skill2" VARCHAR(20),
-	"Skill3" VARCHAR(20),
-	"Skill4" VARCHAR(20),
-	"Skill5" VARCHAR(20),
-	"Skill6" VARCHAR(20),
-	"Skill7" VARCHAR(20),
-	"Skill8" VARCHAR(20),
-	"Skill9" VARCHAR(20),
-	"Skill10" VARCHAR(20)
+	"CategoryId" Serial PRIMARY KEY,
+	"Name" VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE "Benefits"
+INSERT INTO "Category"("Name")
+VALUES('Frontend'),('Backend'),('Fullstack'),('Dev-Ops');
+
+CREATE TABLE "Experience"
 (
-	"BenefitsId" Serial PRIMARY KEY,
-	"Benefit1" VARCHAR(20),
-	"Benefit2" VARCHAR(20),
-	"Benefit3" VARCHAR(20),
-	"Benefit4" VARCHAR(20),
-	"Benefit5" VARCHAR(20),
-	"Benefit6" VARCHAR(20),
-	"Benefit7" VARCHAR(20),
-	"Benefit8" VARCHAR(20),
-	"Benefit9" VARCHAR(20),
-	"Benefit10" VARCHAR(20)
+	"ExperienceId" Serial PRIMARY KEY,
+	"Name" VARCHAR(7) NOT NULL
+);
+
+INSERT INTO "Experience"("Name")
+VALUES('Senior'),('Middle'),('Junior'),('Treinee');
+
+CREATE TABLE "Skill"
+(
+	"SkillId" Serial PRIMARY KEY,
+	"Name" VARCHAR(20) NOT NULL
+);
+
+INSERT INTO "Skill"("Name")
+VALUES('Sent'),('Opened'),('Rejected'),('Offer');
+
+CREATE TABLE "Benefit"
+(
+	"BenefitId" Serial PRIMARY KEY,
+	"Name" VARCHAR(20) NOT NULL
+);
+
+INSERT INTO "Benefit"("Name")
+VALUES('Sent'),('Opened'),('Rejected'),('Offer');
+
+CREATE TABLE "UserSkill"
+(
+	"UserSkillId" Serial PRIMARY KEY,
+	"SkillId1" Integer REFERENCES "Skill"("SkillId"),
+	"SkillId2" Integer REFERENCES "Skill"("SkillId"),
+	"SkillId3" Integer REFERENCES "Skill"("SkillId"),
+	"SkillId4" Integer REFERENCES "Skill"("SkillId"),
+	"SkillId5" Integer REFERENCES "Skill"("SkillId"),
+	"SkillId6" Integer REFERENCES "Skill"("SkillId"),
+	"SkillId7" Integer REFERENCES "Skill"("SkillId"),
+	"SkillId8" Integer REFERENCES "Skill"("SkillId"),
+	"SkillId9" Integer REFERENCES "Skill"("SkillId"),
+	"SkillId10" Integer REFERENCES "Skill"("SkillId")
+);
+
+CREATE TABLE "JobBenefit"
+(
+	"JobBenefitId" Serial PRIMARY KEY,
+	"BenefitId1" Integer REFERENCES "Benefit"("BenefitId"),
+	"BenefitId2" Integer REFERENCES "Benefit"("BenefitId"),
+	"BenefitId3" Integer REFERENCES "Benefit"("BenefitId"),
+	"BenefitId4" Integer REFERENCES "Benefit"("BenefitId"),
+	"BenefitId5" Integer REFERENCES "Benefit"("BenefitId"),
+	"BenefitId6" Integer REFERENCES "Benefit"("BenefitId"),
+	"BenefitId7" Integer REFERENCES "Benefit"("BenefitId"),
+	"BenefitId8" Integer REFERENCES "Benefit"("BenefitId"),
+	"BenefitId9" Integer REFERENCES "Benefit"("BenefitId"),
+	"BenefitId10"Integer REFERENCES "Benefit"("BenefitId")
 );
 
 CREATE TABLE "Company"
@@ -62,21 +98,22 @@ CREATE TABLE "User"
 	"LastName" VARCHAR(20) NOT NULL,
 	"Password" VARCHAR(100) NOT NULL,
 	"Address" VARCHAR(20) NOT NULL,
-	"ResumeId" Integer NOT NULL,
+	"ResumeId" Integer,
 	"UserStatus" VARCHAR(10),
 	"CompanyId" Integer 
 		REFERENCES "Company"("CompanyId")
 		Default NULL,
 	"Email" VARCHAR(50) NOT NULL,
 	"PhoneNumber" VARCHAR(15) NOT NULL,
-	"SkillsId" Integer UNIQUE REFERENCES "Skills"("SkillsId")
+	"UserSkillId" Integer UNIQUE REFERENCES "UserSkill"("UserSkillId")
 );
 
 CREATE TABLE "JobPosting"
 (
 	"JobPostingId" Serial PRIMARY KEY,
-	"CategoryId" VARCHAR(20) NOT NULL,
-	"SkillsId" Integer UNIQUE NOT NULL REFERENCES "Skills"("SkillsId"),
+	"CategoryId" Integer NOT NULL REFERENCES "Category"("CategoryId"),
+	"UserSkillId" Integer UNIQUE NOT NULL REFERENCES "UserSkill"("UserSkillId"),
+	"UserId" Integer NOT NULL REFERENCES "User"("UserId"),
 	"CompanyId" Integer NOT NULL REFERENCES "Company"("CompanyId"),
 	"SalaryMin" Integer NOT NULL,
 	"SalaryMax" Integer NOT NULL,
@@ -84,11 +121,11 @@ CREATE TABLE "JobPosting"
 	"WhatWeOffer" VARCHAR(500) NOT NULL,
 	"ExpirationDate" timestamp with time zone,
 	"RowCreated" timestamp with time zone,
-	"Experience" VARCHAR(7) NOT NULL,
+	"ExperienceId" Integer NOT NULL REFERENCES "Experience"("ExperienceId"),
 	"Location" VARCHAR(20) NOT NULL,
 	"Hybrid" Boolean NOT NULL,
 	"Remote" Boolean NOT NULL,
-	"BenefitsId" Integer NOT NULL REFERENCES "Benefits"("BenefitsId")
+	"JobBenefitId" Integer NOT NULL REFERENCES "JobBenefit"("JobBenefitId")
 );
 
 CREATE TRIGGER TrJobPostingRowCreatedTimeStamp
@@ -97,7 +134,7 @@ FOR EACH ROW
 EXECUTE FUNCTION set_timestamp();
 
 
-ALTER TABLE "Skills"
+ALTER TABLE "UserSkill"
 add "UserId" Integer UNIQUE REFERENCES "User"("UserId"),
 add "JobPostingId" Integer UNIQUE REFERENCES "JobPosting"("JobPostingId");
 
