@@ -1,11 +1,10 @@
 using GenericServices;
 using JobApplicationAPI.Services;
 using JobApplicationAPI.Shared.Database;
-using Microsoft.AspNetCore.Authorization;
+using JobApplicationAPI.Shared.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models.Dtos;
-using Models.Entities;
 using WebCommon.Database;
 
 namespace JobApplicationAPI.Controllers;
@@ -35,7 +34,7 @@ public class AuthController : ControllerWithDatabaseAccess
             return NotFound("No User with specified email found");
 
         var validatePasseotd = HasherService.VerifyPassword(userDto.Password, user.Password);
-        var token = JwtService.GenerateJwtToken(user.Email, user.UserStatus);
+        var token = JwtService.GenerateJwtToken(user.Email, user.UserStatus!);
 
         return Ok(token);
     }
@@ -60,6 +59,8 @@ public class AuthController : ControllerWithDatabaseAccess
 
         if (phonePresentInDb)
             return BadRequest("User with specified phone number already exists");
+
+        userDto.Password = HasherService.HashPassword(userDto.Password);
 
         await _service.CreateAndSaveAsync(userDto);
 

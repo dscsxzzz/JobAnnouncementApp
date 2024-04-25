@@ -1,31 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Models.Entities;
+namespace JobApplicationAPI.Shared.Models.Entities;
 
 public partial class Benefit
 {
-    public int BenefitsId { get; set; }
+    public int BenefitId { get; set; }
 
-    public string? Benefit1 { get; set; }
+    public string Name { get; set; } = null!;
 
-    public string? Benefit2 { get; set; }
+    public virtual ICollection<JobBenefit> JobBenefitBenefit10 { get; set; } = new List<JobBenefit>();
 
-    public string? Benefit3 { get; set; }
+    public virtual ICollection<JobBenefit> JobBenefitBenefit1 { get; set; } = new List<JobBenefit>();
 
-    public string? Benefit4 { get; set; }
+    public virtual ICollection<JobBenefit> JobBenefitBenefit2 { get; set; } = new List<JobBenefit>();
 
-    public string? Benefit5 { get; set; }
+    public virtual ICollection<JobBenefit> JobBenefitBenefit3 { get; set; } = new List<JobBenefit>();
 
-    public string? Benefit6 { get; set; }
+    public virtual ICollection<JobBenefit> JobBenefitBenefit4 { get; set; } = new List<JobBenefit>();
 
-    public string? Benefit7 { get; set; }
+    public virtual ICollection<JobBenefit> JobBenefitBenefit5 { get; set; } = new List<JobBenefit>();
 
-    public string? Benefit8 { get; set; }
+    public virtual ICollection<JobBenefit> JobBenefitBenefit6 { get; set; } = new List<JobBenefit>();
 
-    public string? Benefit9 { get; set; }
+    public virtual ICollection<JobBenefit> JobBenefitBenefit7 { get; set; } = new List<JobBenefit>();
 
-    public string? Benefit10 { get; set; }
+    public virtual ICollection<JobBenefit> JobBenefitBenefit8 { get; set; } = new List<JobBenefit>();
 
-    public virtual ICollection<JobPosting> JobPostings { get; set; } = new List<JobPosting>();
+    public virtual ICollection<JobBenefit> JobBenefitBenefit9 { get; set; } = new List<JobBenefit>();
 }

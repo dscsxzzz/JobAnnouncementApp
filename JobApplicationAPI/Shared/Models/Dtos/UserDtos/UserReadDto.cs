@@ -1,6 +1,5 @@
 using GenericServices;
-using Models.Entities;
-using System.Text.Json.Serialization;
+using JobApplicationAPI.Shared.Models.Entities;
 
 namespace Models.Dtos;
 
@@ -12,11 +11,13 @@ public partial class UserReadDto : ILinkToEntity<User>
 
     public string LastName { get; set; } = null!;
 
+    public string Password { get; set; } = null!;
+
     public string Address { get; set; } = null!;
 
     public int ResumeId { get; set; }
 
-    public string UserStatus { get; set; } = null!;
+    public string? UserStatus { get; set; }
 
     public int? CompanyId { get; set; }
 
@@ -24,7 +25,9 @@ public partial class UserReadDto : ILinkToEntity<User>
 
     public string PhoneNumber { get; set; } = null!;
 
-    public int? SkillsId { get; set; }
+    public int? UserSkillId { get; set; }
 
     public virtual Company? Company { get; set; }
+
+    public virtual UserSkill? UserSkill { get; set; }
 }

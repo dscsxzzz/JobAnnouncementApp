@@ -1,37 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Models.Entities;
+namespace JobApplicationAPI.Shared.Models.Entities;
 
 public partial class Skill
 {
-    public int SkillsId { get; set; }
+    public int SkillId { get; set; }
 
-    public string? Skill1 { get; set; }
+    public string Name { get; set; } = null!;
 
-    public string? Skill2 { get; set; }
+    public virtual ICollection<UserSkill> UserSkillSkill10 { get; set; } = new List<UserSkill>();
 
-    public string? Skill3 { get; set; }
+    public virtual ICollection<UserSkill> UserSkillSkill1 { get; set; } = new List<UserSkill>();
 
-    public string? Skill4 { get; set; }
+    public virtual ICollection<UserSkill> UserSkillSkill2 { get; set; } = new List<UserSkill>();
 
-    public string? Skill5 { get; set; }
+    public virtual ICollection<UserSkill> UserSkillSkill3 { get; set; } = new List<UserSkill>();
 
-    public string? Skill6 { get; set; }
+    public virtual ICollection<UserSkill> UserSkillSkill4 { get; set; } = new List<UserSkill>();
 
-    public string? Skill7 { get; set; }
+    public virtual ICollection<UserSkill> UserSkillSkill5 { get; set; } = new List<UserSkill>();
 
-    public string? Skill8 { get; set; }
+    public virtual ICollection<UserSkill> UserSkillSkill6 { get; set; } = new List<UserSkill>();
 
-    public string? Skill9 { get; set; }
+    public virtual ICollection<UserSkill> UserSkillSkill7 { get; set; } = new List<UserSkill>();
 
-    public string? Skill10 { get; set; }
+    public virtual ICollection<UserSkill> UserSkillSkill8 { get; set; } = new List<UserSkill>();
 
-    public int? UserId { get; set; }
-
-    public int? JobPostingId { get; set; }
-
-    public virtual JobPosting? JobPosting { get; set; }
-
-    public virtual User? User { get; set; }
+    public virtual ICollection<UserSkill> UserSkillSkill9 { get; set; } = new List<UserSkill>();
 }

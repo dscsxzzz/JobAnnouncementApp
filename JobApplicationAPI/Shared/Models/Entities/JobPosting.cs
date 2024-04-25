@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Models.Entities;
+namespace JobApplicationAPI.Shared.Models.Entities;
 
 public partial class JobPosting
 {
     public int JobPostingId { get; set; }
 
-    public string CategoryId { get; set; } = null!;
+    public int CategoryId { get; set; }
 
-    public int SkillsId { get; set; }
+    public int UserSkillId { get; set; }
+
+    public int UserId { get; set; }
 
     public int CompanyId { get; set; }
 
@@ -25,7 +27,7 @@ public partial class JobPosting
 
     public DateTime? RowCreated { get; set; }
 
-    public string Experience { get; set; } = null!;
+    public int ExperienceId { get; set; }
 
     public string Location { get; set; } = null!;
 
@@ -33,13 +35,19 @@ public partial class JobPosting
 
     public bool Remote { get; set; }
 
-    public int BenefitsId { get; set; }
+    public int JobBenefitId { get; set; }
 
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
-    public virtual Benefit Benefits { get; set; } = null!;
+    public virtual Category Category { get; set; } = null!;
 
     public virtual Company Company { get; set; } = null!;
 
-    public virtual Skill Skills { get; set; } = null!;
+    public virtual Experience Experience { get; set; } = null!;
+
+    public virtual JobBenefit JobBenefit { get; set; } = null!;
+
+    public virtual User User { get; set; } = null!;
+
+    public virtual UserSkill UserSkill { get; set; } = null!;
 }

@@ -1,5 +1,5 @@
 using GenericServices;
-using Models.Entities;
+using JobApplicationAPI.Shared.Models.Entities;
 using System.Text.Json.Serialization;
 
 namespace Models.Dtos;
@@ -19,7 +19,7 @@ public partial class UserUpdateDto : ILinkToEntity<User>
 
     public int ResumeId { get; set; }
 
-    public string UserStatus { get; set; } = null!;
+    public string? UserStatus { get; set; }
 
     public int? CompanyId { get; set; }
 
@@ -27,5 +27,11 @@ public partial class UserUpdateDto : ILinkToEntity<User>
 
     public string PhoneNumber { get; set; } = null!;
 
-    public int? SkillsId { get; set; }
+    public int? UserSkillId { get; set; }
+
+    public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
+
+    public virtual Company? Company { get; set; }
+
+    public virtual UserSkill? UserSkill { get; set; }
 }

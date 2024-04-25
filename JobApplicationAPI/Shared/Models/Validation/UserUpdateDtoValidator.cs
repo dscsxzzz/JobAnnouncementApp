@@ -33,9 +33,9 @@ public partial class UserUpdateDtoValidator : AbstractValidator<UserUpdateDto>
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
             .MaximumLength(15);
-        When(x => x.SkillsId is not null, () =>
+        When(x => x.UserSkillId is not null, () =>
         {
-            RuleFor(x => x.SkillsId)
+            RuleFor(x => x.UserSkillId)
                 .GreaterThan(0);
         });
     }

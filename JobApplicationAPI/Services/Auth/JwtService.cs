@@ -16,7 +16,7 @@ public static class JwtService
             new (ClaimTypes.Role, role)
         };
 
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JobApplicationProject"));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JobApplicationProjectSecurityKey"));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(

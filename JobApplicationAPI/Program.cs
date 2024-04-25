@@ -1,16 +1,14 @@
 using GenericServices.Setup;
-using JobApplicationAPI.Shared.Database;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Models.Dtos;
-using Models.Validation;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using FluentValidation;
-using Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using JobApplicationAPI.Shared.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +21,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<JobAppContext>(options =>
     options.UseNpgsql("Host=localhost;Database=JobApp;Username=postgres;Password=test"));
 builder.Services.GenericServicesSimpleSetup<JobAppContext>(
-    Assembly.GetAssembly(typeof(UserReadDto)));
+    Assembly.GetAssembly(typeof(UserReadFullDto)));
 builder.Services.AddFluentValidationAutoValidation()
     .AddValidatorsFromAssemblyContaining(
         typeof(UserReadDto)
@@ -43,7 +41,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = "JobApplicationProjectIss",
         ValidAudience = "JobApplicationProjectAudience",
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JobApplicationProject")),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JobApplicationProjectSecurityKey")),
     };
 
     options.Events = new JwtBearerEvents
@@ -62,7 +60,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("UserOnly", policy => policy.RequireRole("JobSeeker"));
+    options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
     options.AddPolicy("RecruiterOnly", policy => policy.RequireRole("Recruiter"));
     options.AddPolicy("EmployerOnly", policy => policy.RequireRole("Employer"));
 });
