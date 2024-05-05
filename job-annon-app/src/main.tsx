@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
-import ErrorPage from "./error-page/ErrorPage.tsx";
+import ErrorPage from "./pages/error-page/ErrorPage.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 
