@@ -52,35 +52,6 @@ CREATE TABLE "Benefit"
 INSERT INTO "Benefit"("Name")
 VALUES('Sent'),('Opened'),('Rejected'),('Offer');
 
-CREATE TABLE "UserSkill"
-(
-	"UserSkillId" Serial PRIMARY KEY,
-	"SkillId1" Integer REFERENCES "Skill"("SkillId"),
-	"SkillId2" Integer REFERENCES "Skill"("SkillId"),
-	"SkillId3" Integer REFERENCES "Skill"("SkillId"),
-	"SkillId4" Integer REFERENCES "Skill"("SkillId"),
-	"SkillId5" Integer REFERENCES "Skill"("SkillId"),
-	"SkillId6" Integer REFERENCES "Skill"("SkillId"),
-	"SkillId7" Integer REFERENCES "Skill"("SkillId"),
-	"SkillId8" Integer REFERENCES "Skill"("SkillId"),
-	"SkillId9" Integer REFERENCES "Skill"("SkillId"),
-	"SkillId10" Integer REFERENCES "Skill"("SkillId")
-);
-
-CREATE TABLE "JobBenefit"
-(
-	"JobBenefitId" Serial PRIMARY KEY,
-	"BenefitId1" Integer REFERENCES "Benefit"("BenefitId"),
-	"BenefitId2" Integer REFERENCES "Benefit"("BenefitId"),
-	"BenefitId3" Integer REFERENCES "Benefit"("BenefitId"),
-	"BenefitId4" Integer REFERENCES "Benefit"("BenefitId"),
-	"BenefitId5" Integer REFERENCES "Benefit"("BenefitId"),
-	"BenefitId6" Integer REFERENCES "Benefit"("BenefitId"),
-	"BenefitId7" Integer REFERENCES "Benefit"("BenefitId"),
-	"BenefitId8" Integer REFERENCES "Benefit"("BenefitId"),
-	"BenefitId9" Integer REFERENCES "Benefit"("BenefitId"),
-	"BenefitId10"Integer REFERENCES "Benefit"("BenefitId")
-);
 
 CREATE TABLE "Company"
 (
@@ -104,15 +75,13 @@ CREATE TABLE "User"
 		REFERENCES "Company"("CompanyId")
 		Default NULL,
 	"Email" VARCHAR(50) NOT NULL,
-	"PhoneNumber" VARCHAR(15) NOT NULL,
-	"UserSkillId" Integer UNIQUE REFERENCES "UserSkill"("UserSkillId")
+	"PhoneNumber" VARCHAR(15) NOT NULL
 );
 
 CREATE TABLE "JobPosting"
 (
 	"JobPostingId" Serial PRIMARY KEY,
 	"CategoryId" Integer NOT NULL REFERENCES "Category"("CategoryId"),
-	"UserSkillId" Integer UNIQUE NOT NULL REFERENCES "UserSkill"("UserSkillId"),
 	"UserId" Integer NOT NULL REFERENCES "User"("UserId"),
 	"CompanyId" Integer NOT NULL REFERENCES "Company"("CompanyId"),
 	"SalaryMin" Integer NOT NULL,
@@ -124,19 +93,13 @@ CREATE TABLE "JobPosting"
 	"ExperienceId" Integer NOT NULL REFERENCES "Experience"("ExperienceId"),
 	"Location" VARCHAR(20) NOT NULL,
 	"Hybrid" Boolean NOT NULL,
-	"Remote" Boolean NOT NULL,
-	"JobBenefitId" Integer NOT NULL REFERENCES "JobBenefit"("JobBenefitId")
+	"Remote" Boolean NOT NULL
 );
 
 CREATE TRIGGER TrJobPostingRowCreatedTimeStamp
 BEFORE INSERT ON "JobPosting"
 FOR EACH ROW
 EXECUTE FUNCTION set_timestamp();
-
-
-ALTER TABLE "UserSkill"
-add "UserId" Integer UNIQUE REFERENCES "User"("UserId"),
-add "JobPostingId" Integer UNIQUE REFERENCES "JobPosting"("JobPostingId");
 
 CREATE TABLE "Application"
 (
@@ -153,3 +116,76 @@ CREATE TABLE "Application"
 	"PreviousWorkPlace" VARCHAR(30) NOT NULL,
 	"MessageToRecruiter" VARCHAR(500) NOT NULL
 );
+
+CREATE TABLE "UserSkill"
+(
+	"UserId" Integer NOT NULL REFERENCES "User"("UserId"),
+	"SkillId" Integer NOT NULL REFERENCES "Skill"("SkillId"),
+	PRIMARY KEY ("UserId", "SkillId") 
+);
+
+CREATE TABLE "JobPostingSkill"
+(
+	"JobPostingId" Integer NOT NULL REFERENCES "JobPosting"("JobPostingId"),
+	"SkillId" Integer NOT NULL REFERENCES "Skill"("SkillId"),
+	PRIMARY KEY ("JobPostingId", "SkillId") 
+);
+
+CREATE TABLE "JobPostingBenefit"
+(
+	"JobPostingId" Integer NOT NULL REFERENCES "JobPosting"("JobPostingId"),
+	"BenefitId" Integer NOT NULL REFERENCES "Benefit"("BenefitId"),
+	PRIMARY KEY ("JobPostingId", "BenefitId") 
+);
+
+
+CREATE OR REPLACE FUNCTION ForbidMoreThan10SkillsUser()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (
+    SELECT COUNT(*)
+    FROM "UserSkill"
+    WHERE "UserId" = NEW."UserId"
+  ) >= 10
+  THEN 
+    RAISE EXCEPTION 'Cannot add another skill. Exceeded Maximum amount (10).';
+  END IF;
+
+  IF EXISTS(
+    SELECT "SkillId"
+    FROM "UserSkill"
+    WHERE "SkillId" = NEW."SkillId"
+  )
+  THEN 
+    RAISE EXCEPTION 'Cannot add another skill. Exceeded Maximum amount (10).';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER TrForbidMoreThan10SkillsUser
+BEFORE INSERT ON "UserSkill"
+FOR EACH ROW
+EXECUTE FUNCTION ForbidMoreThan10SkillsUser();
+
+CREATE OR REPLACE FUNCTION ForbidMoreThan10SkillsJobPosting()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (
+    SELECT COUNT(*)
+    FROM "JobPostingSkill"
+    WHERE "UserId" = NEW."UserId"
+  ) >= 10
+  THEN 
+    RAISE EXCEPTION 'Cannot add another skill. Exceeded Maximum amount (10).';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER TrForbidMoreThan10SkillsJobPosting
+BEFORE INSERT ON "JobPostingSkill"
+FOR EACH ROW
+EXECUTE FUNCTION ForbidMoreThan10SkillsJobPosting();

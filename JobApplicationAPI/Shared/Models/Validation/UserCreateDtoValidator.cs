@@ -1,4 +1,5 @@
 using FluentValidation;
+using JobApplicationAPI.Shared.Extensions;
 using Models.Dtos;
 
 namespace Models.Validation;
@@ -16,10 +17,8 @@ public partial class UserCreateDtoValidator : AbstractValidator<UserCreateDto>
         RuleFor(x => x.Password)
             .NotEmpty()
             .MinimumLength(10)
-            .Must(ContainsDigit)
-            .WithMessage("Password must contain a digit")
-            .Must(ContainsSpecialCharacter)
-            .WithMessage("Password must contain a special character")
+            .ContainsDigit()
+            .ContainsSpecialCharacter()
             .MaximumLength(100);
         RuleFor(x => x.Address)
             .NotEmpty()
@@ -37,34 +36,5 @@ public partial class UserCreateDtoValidator : AbstractValidator<UserCreateDto>
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
             .MaximumLength(15);
-        When(x => x.UserSkillId is not null, () =>
-        {
-            RuleFor(x => x.UserSkillId)
-                .GreaterThan(0);
-        });
-    }
-
-    static bool ContainsDigit(string input)
-    {
-        foreach (char c in input)
-        {
-            if (char.IsDigit(c))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    static bool ContainsSpecialCharacter(string input)
-    {
-        foreach (char c in input)
-        {
-            if (!char.IsLetterOrDigit(c))
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }

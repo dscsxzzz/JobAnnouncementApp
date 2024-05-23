@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<JobAppContext>(options =>
     options.UseNpgsql("Host=localhost;Database=JobApp;Username=postgres;Password=test"));
 builder.Services.GenericServicesSimpleSetup<JobAppContext>(
-    Assembly.GetAssembly(typeof(UserReadFullDto)));
+    Assembly.GetAssembly(typeof(UserReadDto)));
 builder.Services.AddFluentValidationAutoValidation()
     .AddValidatorsFromAssemblyContaining(
         typeof(UserReadDto)
@@ -59,10 +59,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
-    options.AddPolicy("RecruiterOnly", policy => policy.RequireRole("Recruiter"));
-    options.AddPolicy("EmployerOnly", policy => policy.RequireRole("Employer"));
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin").RequireAuthenticatedUser());
+    options.AddPolicy("UserOnly", policy => policy.RequireRole("JobSeeker").RequireAuthenticatedUser());
+    options.AddPolicy("RecruiterOnly", policy => policy.RequireRole("Recruiter").RequireAuthenticatedUser());
+    options.AddPolicy("EmployerOnly", policy => policy.RequireRole("Employer").RequireAuthenticatedUser());
 });
 
 

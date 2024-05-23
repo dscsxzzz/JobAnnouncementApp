@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+using GenericServices;
+using JobApplicationAPI.Shared.Models.Entities;
 
-namespace JobApplicationAPI.Shared.Models.Entities;
+namespace Models.Dtos;
 
-public partial class JobPosting
+public partial class JobPostingReadFullDto : ILinkToEntity<JobPosting>
 {
     public int JobPostingId { get; set; }
 
@@ -35,10 +35,6 @@ public partial class JobPosting
 
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
-    public virtual Category Category { get; set; } = null!;
-
-    public virtual Company Company { get; set; } = null!;
-    
     public virtual Experience Experience { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;

@@ -17,9 +17,6 @@ public partial class UserCreateDto : ILinkToEntity<User>
 
     public string Address { get; set; } = null!;
 
-    [JsonIgnore]
-    public int? ResumeId { get; set; }
-
     public string? UserStatus { get; set; }
 
     public int? CompanyId { get; set; }
@@ -28,6 +25,5 @@ public partial class UserCreateDto : ILinkToEntity<User>
 
     public string PhoneNumber { get; set; } = null!;
 
-    [JsonIgnore]
-    public int? UserSkillId { get; set; }
+    public virtual ICollection<Skill>? Skills { get; set; } = new List<Skill>();
 }

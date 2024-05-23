@@ -1,16 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+using GenericServices;
+using JobApplicationAPI.Shared.Models.Entities;
+using System.Text.Json.Serialization;
 
-namespace JobApplicationAPI.Shared.Models.Entities;
+namespace Models.Dtos;
 
-public partial class JobPosting
+public partial class JobPostingUpdateDto : ILinkToEntity<JobPosting>
 {
     public int JobPostingId { get; set; }
 
     public int CategoryId { get; set; }
 
+    [JsonIgnore]
     public int UserId { get; set; }
 
+    [JsonIgnore]
     public int CompanyId { get; set; }
 
     public int SalaryMin { get; set; }
@@ -33,15 +36,9 @@ public partial class JobPosting
 
     public bool Remote { get; set; }
 
-    public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
-
     public virtual Category Category { get; set; } = null!;
 
-    public virtual Company Company { get; set; } = null!;
-    
     public virtual Experience Experience { get; set; } = null!;
-
-    public virtual User User { get; set; } = null!;
 
     public virtual ICollection<Benefit> Benefits { get; set; } = new List<Benefit>();
 

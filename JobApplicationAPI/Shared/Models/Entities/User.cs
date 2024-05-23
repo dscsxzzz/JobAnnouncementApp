@@ -15,8 +15,6 @@ public partial class User
 
     public string Address { get; set; } = null!;
 
-    public int? ResumeId { get; set; }
-
     public string? UserStatus { get; set; }
 
     public int? CompanyId { get; set; }
@@ -25,13 +23,11 @@ public partial class User
 
     public string PhoneNumber { get; set; } = null!;
 
-    public int? UserSkillId { get; set; }
-
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
     public virtual Company? Company { get; set; }
 
     public virtual ICollection<JobPosting> JobPostings { get; set; } = new List<JobPosting>();
 
-    public virtual UserSkill? UserSkill { get; set; }
+    public virtual ICollection<Skill> Skills { get; set; } = new List<Skill>();
 }

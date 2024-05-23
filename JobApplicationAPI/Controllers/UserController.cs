@@ -1,14 +1,19 @@
 using GenericServices;
+using JobApplicationAPI.Services;
+using JobApplicationAPI.Services.ListExtension;
 using JobApplicationAPI.Shared.Database;
+using JobApplicationAPI.Shared.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Models.Dtos;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using WebCommon.Database;
 
 namespace JobApplicationAPI.Controllers;
 
-[Authorize(Policy = "UserOnly")]
 [ApiController]
 [Route("users")]
 public class UserController : ControllerWithDatabaseAccess
@@ -20,35 +25,91 @@ public class UserController : ControllerWithDatabaseAccess
         _service = service;
     }
 
-
+    [Authorize]
     [HttpGet]
-    public async Task<ActionResult<List<UserReadDto>>> ListUsersAsync(
-        [FromQuery] string? name, [FromQuery] List<int>? skills,
-        [FromQuery] int page = 1
+    public async Task<ActionResult<List<UserReadDto>>> GetUserAsync(
     )
     {
-        List<UserReadDto> users = new();
-        if (!string.IsNullOrEmpty(name))
-            users = await _service
-                .ReadManyNoTracked<UserReadDto>()
-                .Skip((page - 1) * 10)
-                .Take(10)
-                .Where(
-                    user => (user.Name.Contains(name) ||
-                    user.LastName.Contains(name))
-                )
-                .ToListAsync();
-        else
-            users = await _service
-                .ReadManyNoTracked<UserReadDto>()
-                .Skip((page - 1) * 10)
-                .Take(10)
-                .ToListAsync();
+        try
+        {
+            string bearer = HttpContext.Request.Headers["Authorization"];
 
+            int userId = JwtService.GetJwtUserIdClaim(bearer);
 
-        MongoDbFileService db = new MongoDbFileService();
-        db.TryConnect();
+            var user = await _service
+                .ReadSingleAsync<UserReadDto>(userId);
 
-        return Ok(users);
+            return Ok(user);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e);
+        }
+    }
+
+    [Authorize]
+    [HttpPut]
+    public async Task<ActionResult<UserUpdateDto>> UpdateUserAsync(
+        [FromBody] UserUpdateDto userDto
+    )
+    {
+        try
+        {
+            string bearer = HttpContext.Request.Headers["Authorization"];
+
+            int userId = JwtService.GetJwtUserIdClaim(bearer);
+
+            var user = await _service
+                .ReadSingleAsync<UserReadDto>(userDto.UserId);
+
+            if (user == default)
+                return NotFound("User with speicified id not found.");
+
+            if (user.UserId != userId)
+                return StatusCode(403, "You cannot access this.");
+
+            await _service.UpdateAndSaveAsync(userDto);
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e);
+        }
+    }
+
+    [Authorize]
+    [HttpDelete("{userId}")]
+    public async Task<ActionResult> DeleteUserAsync(
+        [FromRoute] int userId
+    )
+    {
+        if (userId < 1)
+            return BadRequest("User Id cannot be less than 1.");
+
+        try
+        {
+            string bearer = HttpContext.Request.Headers["Authorization"];
+
+            int userIdClaim = JwtService.GetJwtUserIdClaim(bearer);
+            var isAdmin = JwtService.GetJwtRoleClaim(bearer) == "Admin";
+
+            var user = await _service
+                .ReadSingleAsync<UserReadDto>(userId);
+
+            if (user == default)
+                return NotFound("User with specified id not found.");
+
+            if (userId == userIdClaim || !isAdmin)
+                return StatusCode(403, "You cannot access this.");
+
+            await _service.DeleteAndSaveAsync<User>(userId);
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e);
+        }
     }
 }

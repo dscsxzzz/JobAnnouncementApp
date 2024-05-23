@@ -15,9 +15,6 @@ public partial class UserUpdateDtoValidator : AbstractValidator<UserUpdateDto>
         RuleFor(x => x.LastName)
             .NotEmpty()
             .MaximumLength(20);
-        RuleFor(x => x.Password)
-            .NotEmpty()
-            .MaximumLength(100);
         RuleFor(x => x.Address)
             .NotEmpty()
             .MaximumLength(20);
@@ -33,10 +30,5 @@ public partial class UserUpdateDtoValidator : AbstractValidator<UserUpdateDto>
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()
             .MaximumLength(15);
-        When(x => x.UserSkillId is not null, () =>
-        {
-            RuleFor(x => x.UserSkillId)
-                .GreaterThan(0);
-        });
     }
 }

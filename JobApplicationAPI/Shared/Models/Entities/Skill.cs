@@ -9,23 +9,7 @@ public partial class Skill
 
     public string Name { get; set; } = null!;
 
-    public virtual ICollection<UserSkill> UserSkillSkill10 { get; set; } = new List<UserSkill>();
+    public virtual ICollection<JobPosting> JobPostings { get; set; } = new List<JobPosting>();
 
-    public virtual ICollection<UserSkill> UserSkillSkill1 { get; set; } = new List<UserSkill>();
-
-    public virtual ICollection<UserSkill> UserSkillSkill2 { get; set; } = new List<UserSkill>();
-
-    public virtual ICollection<UserSkill> UserSkillSkill3 { get; set; } = new List<UserSkill>();
-
-    public virtual ICollection<UserSkill> UserSkillSkill4 { get; set; } = new List<UserSkill>();
-
-    public virtual ICollection<UserSkill> UserSkillSkill5 { get; set; } = new List<UserSkill>();
-
-    public virtual ICollection<UserSkill> UserSkillSkill6 { get; set; } = new List<UserSkill>();
-
-    public virtual ICollection<UserSkill> UserSkillSkill7 { get; set; } = new List<UserSkill>();
-
-    public virtual ICollection<UserSkill> UserSkillSkill8 { get; set; } = new List<UserSkill>();
-
-    public virtual ICollection<UserSkill> UserSkillSkill9 { get; set; } = new List<UserSkill>();
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

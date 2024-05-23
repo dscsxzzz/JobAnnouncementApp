@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace JobApplicationAPI.Shared.Models.Entities;
+﻿namespace JobApplicationAPI.Shared.Models.Entities;
 
 public partial class ApplicationStatus
 {
