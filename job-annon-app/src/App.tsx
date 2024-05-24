@@ -1,14 +1,13 @@
-import { useState } from "react";
-import NavBar from "./layout/NavBar.tsx";
-import Footer from "./layout/Footer.tsx";
+import NavBar from './layout/NavBar.tsx'
+import Footer from './layout/Footer.tsx'
+import Home from './pages/home/Home.tsx'
 
 export default function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <>
-      <NavBar />
-      <Footer />
-    </>
-  );
+    return (
+        <>
+            <NavBar />
+            <Home />
+            <Footer />
+        </>
+    )
 }

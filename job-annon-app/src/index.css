@@ -5,9 +5,9 @@
 html,
 body,
 #root,
-.app{
+.app {
     height: 100%;
     width: 100%;
-    font-family: "Arial", sans-serif;
+    font-family: 'Arial', sans-serif;
     @apply text-gray-500;
 }
