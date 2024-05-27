@@ -13,7 +13,12 @@ export default function SearchBar({}: Props) {
     const ref2 = useRef<HTMLDivElement>(null)
 
     const handleClickOutside = (event: MouseEvent) => {
-        if (ref.current && !ref.current.contains(event.target as Node) && ref2.current && !ref2.current.contains(event.target as Node)) {
+        if (
+            ref.current &&
+            !ref.current.contains(event.target as Node) &&
+            ref2.current &&
+            !ref2.current.contains(event.target as Node)
+        ) {
             setSelected(false)
         }
     }
@@ -26,7 +31,6 @@ export default function SearchBar({}: Props) {
         }
         return () => {
             document.removeEventListener('mousedown', handleClickOutside)
-            console.log('should be true1', selected)
         }
     }, [selected])
 
@@ -34,12 +38,11 @@ export default function SearchBar({}: Props) {
         <>
             <div className="flex justify-center p-2">
                 <div
-                ref={ref2}
-                    className="w-1/2"
+                    ref={ref2}
+                    className="w-[576px]"
                     onClick={() => {
                         if (!selected) {
                             setSelected(true)
-                            console.log('should be true', selected)
                             return
                         }
                     }}
@@ -62,13 +65,13 @@ export default function SearchBar({}: Props) {
                                     Last searches
                                 </h2>
                                 <div className="flex flex-wrap gap-2">
-                                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded">
+                                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded cursor-pointer">
                                         Backend
                                     </div>
-                                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded">
+                                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded cursor-pointer">
                                         C#
                                     </div>
-                                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded">
+                                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded cursor-pointer">
                                         Backend
                                     </div>
                                 </div>

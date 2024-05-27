@@ -1,15 +1,39 @@
 import { Link } from 'react-router-dom'
 import logo from '/src/assets/logo_w.png'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import pol from '/src/assets/PL.svg'
 
 type Props = {}
 
 function NavBar({}: Props) {
     const [showDropdownLogin, setShowDropdownLogin] = useState(false)
+    const ref = useRef<HTMLDivElement>(null)
+    const ref2 = useRef<HTMLLIElement>(null)
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (
+            ref.current &&
+            !ref.current.contains(event.target as Node) &&
+            ref2.current &&
+            !ref2.current.contains(event.target as Node)
+        ) {
+            setShowDropdownLogin(false)
+        }
+    }
+
+    useEffect(() => {
+        if (showDropdownLogin) {
+            document.addEventListener('mousedown', handleClickOutside)
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [showDropdownLogin])
 
     return (
-        <nav className="bg-gray-900 text-white flex justify-between text-center border-2 border-gray-800">
+        <nav className="bg-gray-900 text-white flex justify-between text-center border-2 border-gray-800 fixed top-0 left-0 right-0 z-30">
             <div className="">
                 <ul className="flex items-center">
                     <li className="px-4">
@@ -64,7 +88,10 @@ function NavBar({}: Props) {
                             POST A JOB
                         </Link>
                     </li>
-                    <li className="py-8 border-l-2 border-r-2 border-gray-800">
+                    <li
+                        ref={ref2}
+                        className="py-8 border-l-2 border-r-2 border-gray-800"
+                    >
                         <span
                             onClick={() =>
                                 setShowDropdownLogin(!showDropdownLogin)
@@ -74,43 +101,52 @@ function NavBar({}: Props) {
                             LOG IN ▼
                         </span>
                         {showDropdownLogin && (
-                            <div className="absolute right-36 bg-gray-800 mt-8 py-2 w-64 border-2 border-gray-700">
-                                <div className="text-white text-left py-4">
-                                    <p className="font-bold px-4 pb-3">
-                                        EMPLOYERS
-                                    </p>
-                                    <Link
-                                        to="/employer-login"
-                                        className="block hover:bg-gray-700 py-2 px-4"
-                                    >
-                                        Log in to Employer Panel
-                                    </Link>
-                                    <Link
-                                        to="/employer-signup"
-                                        className="block hover:bg-gray-700 py-2 px-4"
-                                    >
-                                        Sign up
-                                    </Link>
+                            <>
+                                <div
+                                    onClick={() => setShowDropdownLogin(false)}
+                                    className="fixed inset-0 bg-gray-800 bg-opacity-50 mt-[90px] z-10"
+                                />
+                                <div
+                                    ref={ref}
+                                    className="absolute right-36 bg-gray-800 mt-8 py-2 w-64 border-2 border-gray-700 z-20"
+                                >
+                                    <div className="text-white text-left py-4">
+                                        <p className="font-bold px-4 pb-3">
+                                            EMPLOYERS
+                                        </p>
+                                        <Link
+                                            to="/employer-login"
+                                            className="block hover:bg-gray-700 py-2 px-4"
+                                        >
+                                            Log in to Employer Panel
+                                        </Link>
+                                        <Link
+                                            to="/employer-signup"
+                                            className="block hover:bg-gray-700 py-2 px-4"
+                                        >
+                                            Sign up
+                                        </Link>
+                                    </div>
+                                    <hr />
+                                    <div className="text-white text-left py-4">
+                                        <p className="font-bold px-4 pb-3">
+                                            CANDIDATES
+                                        </p>
+                                        <Link
+                                            to="/candidate-login"
+                                            className="block hover:bg-gray-700 py-2 px-4"
+                                        >
+                                            Log in to your profile
+                                        </Link>
+                                        <Link
+                                            to="/candidate-signup"
+                                            className="block hover:bg-gray-700 py-2 px-4"
+                                        >
+                                            Sign up
+                                        </Link>
+                                    </div>
                                 </div>
-                                <hr />
-                                <div className="text-white text-left py-4">
-                                    <p className="font-bold px-4 pb-3">
-                                        CANDIDATES
-                                    </p>
-                                    <Link
-                                        to="/candidate-login"
-                                        className="block hover:bg-gray-700 py-2 px-4"
-                                    >
-                                        Log in to your profile
-                                    </Link>
-                                    <Link
-                                        to="/candidate-signup"
-                                        className="block hover:bg-gray-700 py-2 px-4"
-                                    >
-                                        Sign up
-                                    </Link>
-                                </div>
-                            </div>
+                            </>
                         )}
                     </li>
                     <li className="">

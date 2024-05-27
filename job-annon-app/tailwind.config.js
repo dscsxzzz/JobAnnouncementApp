@@ -5,4 +5,9 @@ export default {
         extend: {},
     },
     plugins: [],
+    screens: {
+        xs: "480px",
+        sm: "768px",
+        md: "1160px",
+    },
 }
