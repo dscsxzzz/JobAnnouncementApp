@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 type Props = {}
 
@@ -8,10 +8,42 @@ export default function SearchBar({}: Props) {
     const technologies = ['C#', 'Git', 'JavaScript', '.NET']
     const locations = ['Remote', 'Hybrid', 'Field work', 'Warsaw']
     const salaries = ['>10k PLN', '>15k PLN', '>20k PLN', '>25k PLN']
+
+    const ref = useRef<HTMLDivElement>(null)
+    const ref2 = useRef<HTMLDivElement>(null)
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (ref.current && !ref.current.contains(event.target as Node) && ref2.current && !ref2.current.contains(event.target as Node)) {
+            setSelected(false)
+        }
+    }
+
+    useEffect(() => {
+        if (selected) {
+            document.addEventListener('mousedown', handleClickOutside)
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+            console.log('should be true1', selected)
+        }
+    }, [selected])
+
     return (
         <>
             <div className="flex justify-center p-2">
-                <div className="w-full" onClick={() => setSelected(!selected)}>
+                <div
+                ref={ref2}
+                    className="w-1/2"
+                    onClick={() => {
+                        if (!selected) {
+                            setSelected(true)
+                            console.log('should be true', selected)
+                            return
+                        }
+                    }}
+                >
                     <input
                         type="text"
                         placeholder="15673 offers"
@@ -19,7 +51,10 @@ export default function SearchBar({}: Props) {
                     />
                 </div>
                 {selected && (
-                    <div className="absolute mt-10 bg-white py-2 w-[576px] border-2 rounded-md">
+                    <div
+                        ref={ref}
+                        className="absolute mt-10 bg-white py-2 w-[576px] border-2 rounded-md"
+                    >
                         <div className="p-4">
                             {/* TODO: try to take last searches from local storage */}
                             <div className="mb-6">
