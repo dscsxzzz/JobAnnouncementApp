@@ -51,7 +51,7 @@ function NavBar({}: Props) {
                     </li>
                     <li className="py-8 border-r-2 border-gray-800">
                         <Link
-                            to="/"
+                            to="/companies"
                             className="text-white font-bold py-8 px-4 hover:border-b-4 border-blue-700"
                         >
                             COMPANIES
@@ -115,13 +115,13 @@ function NavBar({}: Props) {
                                             EMPLOYERS
                                         </p>
                                         <Link
-                                            to="/employer-login"
+                                            to="/auth/login/employer"
                                             className="block hover:bg-gray-700 py-2 px-4"
                                         >
                                             Log in to Employer Panel
                                         </Link>
                                         <Link
-                                            to="/employer-signup"
+                                            to="/auth/register/employer"
                                             className="block hover:bg-gray-700 py-2 px-4"
                                         >
                                             Sign up
@@ -133,13 +133,13 @@ function NavBar({}: Props) {
                                             CANDIDATES
                                         </p>
                                         <Link
-                                            to="/candidate-login"
+                                            to="/auth/login/candidate"
                                             className="block hover:bg-gray-700 py-2 px-4"
                                         >
                                             Log in to your profile
                                         </Link>
                                         <Link
-                                            to="/candidate-signup"
+                                            to="/auth/register/candidate"
                                             className="block hover:bg-gray-700 py-2 px-4"
                                         >
                                             Sign up
