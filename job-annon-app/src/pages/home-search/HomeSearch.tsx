@@ -1,5 +1,6 @@
 import SearchBar from '../home-search/SearchBar.tsx'
 import JobListing from '../home-search/JobListing.tsx'
+import { Link } from 'react-router-dom'
 
 type Props = {}
 
@@ -51,7 +52,7 @@ export default function HomeSearch({}: Props) {
             </div>
             <div className="flex flex-col items-center">
                 {jobs.map((job, index) => (
-                    <JobListing key={index} {...job} />
+                    <Link to={`applications/company/${index}`}><JobListing key={index} {...job} /></Link>
                 ))}
             </div>
         </>

@@ -1,4 +1,4 @@
-import { useRouteError } from 'react-router-dom'
+import { Link, useRouteError } from 'react-router-dom'
 
 interface ErrorWithStatus extends Error {
     statusText?: string
@@ -24,6 +24,9 @@ export default function ErrorPage() {
                         {error.statusText || error.message || error.statusCode}
                     </i>
                 </p>
+                <div className="pt-4">
+                    <Link to="/" className="text-black">{"←"} Back to Home</Link>
+                </div>
             </div>
         </div>
     )

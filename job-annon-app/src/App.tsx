@@ -5,6 +5,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import HomeSearch from './pages/home-search/HomeSearch.tsx'
 import Companies from './pages/companies/Companies.tsx'
+import MySalary from './pages/my-salary/MySalary.tsx'
+import ForEmployer from './pages/for-employer/ForEmployer.tsx'
+import PostAJob from './pages/post-job/PostAJob.tsx'
+import JobApplication from './pages/job-application/JobApplication.tsx'
 import CandidateLogin from './pages/auth/candidate/CandidateLogin.tsx'
 import CandidateRegister from './pages/auth/candidate/CandidateRegister.tsx'
 import EmployerLogin from './pages/auth/employer/EmployerLogin.tsx'
@@ -17,43 +21,59 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {
-                path: "/",
-                element: <HomeSearch />
+                path: '/',
+                element: <HomeSearch />,
             },
             {
-                path: "companies",
-                element: <Companies />
-            }
-        ]
+                path: 'companies',
+                element: <Companies />,
+            },
+            {
+                path: 'mysalary',
+                element: <MySalary />,
+            },
+            {
+                path: 'employers',
+                element: <ForEmployer />,
+            },
+            {
+                path: 'post-job',
+                element: <PostAJob />,
+            },
+            {
+                path: 'applications/company/:applicationId',
+                element: <JobApplication />,
+            },
+        ],
     },
     {
         element: <AuthLayout />,
         path: 'auth',
         children: [
             {
-                path: "login",
+                path: 'login',
                 children: [
                     {
-                        path: "candidate",
+                        path: 'candidate',
                         element: <CandidateLogin />,
                     },
                     {
-                        path: "employer",
-                        element: <EmployerLogin />
-                    }
+                        path: 'employer',
+                        element: <EmployerLogin />,
+                    },
                 ],
             },
             {
-                path: "register",
+                path: 'register',
                 children: [
                     {
-                        path: "candidate",
+                        path: 'candidate',
                         element: <CandidateRegister />,
                     },
                     {
-                        path: "employer",
-                        element: <EmployerRegister />
-                    }
+                        path: 'employer',
+                        element: <EmployerRegister />,
+                    },
                 ],
             },
         ],

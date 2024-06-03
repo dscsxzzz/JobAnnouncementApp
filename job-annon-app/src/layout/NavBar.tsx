@@ -59,7 +59,7 @@ function NavBar({}: Props) {
                     </li>
                     <li className="py-8 border-r-2 border-gray-800">
                         <Link
-                            to="/"
+                            to="/mysalary"
                             className="text-white font-bold py-8 px-4 hover:border-b-4 border-blue-700"
                         >
                             MYSALARY
@@ -74,7 +74,7 @@ function NavBar({}: Props) {
                 <ul className="flex items-center">
                     <li className="py-8 border-l-2 border-gray-800">
                         <Link
-                            to="/"
+                            to="/employers"
                             className="text-white font-bold py-8 px-4 hover:border-b-4 border-blue-700"
                         >
                             FOR EMPLOYERS
@@ -82,7 +82,7 @@ function NavBar({}: Props) {
                     </li>
                     <li className="py-8 border-l-2 border-gray-800">
                         <Link
-                            to="/"
+                            to="/post-job"
                             className="text-white font-bold py-8 px-4 hover:border-b-4 border-blue-700"
                         >
                             POST A JOB

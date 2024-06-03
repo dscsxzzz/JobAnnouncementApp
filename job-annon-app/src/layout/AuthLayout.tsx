@@ -20,7 +20,7 @@ export default function AuthLayout({}: Props) {
                                 to="/"
                                 className="text-white font-bold py-8 px-4 hover:border-b-4 border-blue-700"
                             >
-                                {'<-'} BACK TO HOME
+                                {'←'} BACK TO HOME
                             </Link>
                         </li>
                     </ul>
