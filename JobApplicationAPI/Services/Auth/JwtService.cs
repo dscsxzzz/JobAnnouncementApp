@@ -39,7 +39,7 @@ public static class JwtService
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtSecurity = tokenHandler.ReadToken(jwt) as JwtSecurityToken;
 
-        string role = jwtSecurity.Claims.FirstOrDefault(x => x.Type == "Role")?.Value;
+        string role = jwtSecurity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
 
         return role;
     }
@@ -51,7 +51,7 @@ public static class JwtService
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtSecurity = tokenHandler.ReadToken(jwt) as JwtSecurityToken;
 
-        string Id = jwtSecurity.Claims.FirstOrDefault(x => x.Type == "Authentication")?.Value;
+        string Id = jwtSecurity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Authentication)?.Value;
         int UserId = Int32.Parse(Id);
 
         return UserId;

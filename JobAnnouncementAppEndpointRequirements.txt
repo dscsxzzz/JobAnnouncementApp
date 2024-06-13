@@ -3,8 +3,8 @@ baseUrl: localhost
 TO DO LIST:
 Add different JobApplicationEndpointsfor owners of the JobPosting and for JobSeekers.
 Add filtering for only AwailableJobPostings.
-Add userId only from JWT
-
+Add filtering and pagination for applications.
+Start writing Tests.
 
 //////// User Endpoints://////////////
 [GET]

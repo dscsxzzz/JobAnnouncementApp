@@ -3,11 +3,12 @@ using JobApplicationAPI.Services;
 using JobApplicationAPI.Services.ListExtension;
 using JobApplicationAPI.Shared.Database;
 using JobApplicationAPI.Shared.Models.Entities;
+using JobApplicationAPI.Shared.Models.UserModels;
+using JobApplicationAPI.Shared.Models.UserModels.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Models.Dtos;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using WebCommon.Database;
@@ -23,28 +24,6 @@ public class UserController : ControllerWithDatabaseAccess
     public UserController(JobAppContext context, ICrudServicesAsync service) : base(context, service)
     {
         _service = service;
-    }
-
-    [Authorize]
-    [HttpGet]
-    public async Task<ActionResult<List<UserReadDto>>> GetUserAsync(
-    )
-    {
-        try
-        {
-            string bearer = HttpContext.Request.Headers["Authorization"];
-
-            int userId = JwtService.GetJwtUserIdClaim(bearer);
-
-            var user = await _service
-                .ReadSingleAsync<UserReadDto>(userId);
-
-            return Ok(user);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e);
-        }
     }
 
     [Authorize]
@@ -67,6 +46,18 @@ public class UserController : ControllerWithDatabaseAccess
 
             if (user.UserId != userId)
                 return StatusCode(403, "You cannot access this.");
+
+            var skills = await _service
+            .ReadManyNoTracked<Skill>()
+            .Where(x => userDto.SkillIds.Contains(x.SkillId))
+            .AsTracking()
+            .ToListAsync();
+
+            if (skills.Count != userDto.SkillIds.Count)
+                return Conflict("Not All skill id`s were found");
+
+            userDto.Password = HasherService.HashPassword(userDto.Password);
+            userDto.Skills = skills;
 
             await _service.UpdateAndSaveAsync(userDto);
 

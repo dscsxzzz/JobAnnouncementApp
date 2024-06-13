@@ -2,12 +2,12 @@
 using JobApplicationAPI.Services;
 using JobApplicationAPI.Services.ListExtension;
 using JobApplicationAPI.Shared.Database;
+using JobApplicationAPI.Shared.Models.BenefitModels;
 using JobApplicationAPI.Shared.Models.Entities;
+using JobApplicationAPI.Shared.Models.JobPostingModels.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Models.Dtos;
 using WebCommon.Database;
 
 namespace JobApplicationAPI.Controllers;
@@ -89,26 +89,29 @@ public class JobPostingController : ControllerWithDatabaseAccess
     }
 
     [Authorize]
-    [HttpGet("/my-job-postings")]
-    public async Task<ActionResult<List<JobPostingReadDto>>> ListJobPostingsForOwnerAsync(
+    [HttpGet("my-job-postings")]
+    public async Task<ActionResult<List<JobPostingReadFullDto>>> ListJobPostingsForOwnerAsync(
+        [FromQuery] int page = 1
     )
     {
         string bearer = HttpContext.Request.Headers["Authorization"];
 
-        int userIdClaim = JwtService.GetJwtUserIdClaim(bearer);
+        int companyId = JwtService.GetJwtUserIdClaim(bearer);
 
         var jobPostings = await _service
-            .ReadManyNoTracked<JobPostingReadDto>()
+            .ReadManyNoTracked<JobPostingReadFullDto>()
             .Where(
-                x => x.UserId == userIdClaim
+                x => x.CompanyId == companyId
             )
+            .Skip((page - 1) * 10)
+            .Take(10)
             .ToListAsync();
 
         return Ok(jobPostings);
 
     }
 
-    [Authorize(Roles ="Employer,Recruiter")]
+    [Authorize(Roles ="Company")]
     [HttpPost]
     public async Task<ActionResult> PostJobPostingAsync(
         [FromBody] JobPostingCreateDto jobPostingCreateDto
@@ -116,35 +119,39 @@ public class JobPostingController : ControllerWithDatabaseAccess
     {
         try
         {
-            var user = await _service
-                .ReadManyNoTracked<User>()
-                .Where(
-                    x => x.CompanyId == jobPostingCreateDto.CompanyId &&
-                    x.UserId == jobPostingCreateDto.UserId
-                )
+            string bearer = HttpContext.Request.Headers["Authorization"];
+
+            int companyId = JwtService.GetJwtUserIdClaim(bearer);
+
+            var category = await _service
+                .ReadManyNoTracked<Category>()
+                .Where(x => x.CategoryId == jobPostingCreateDto.CategoryId)
                 .AnyAsync();
 
-            if (!user)
-                return Conflict("You have no permission to post from her/his name.");
+            if (!category)
+                return Conflict("Category with specified id not found.");
 
-            var company = await _service
-                .ReadManyNoTracked<Company>()
-                .Where(
-                    x => x.CompanyId == jobPostingCreateDto.CompanyId &&
-                    x.Users.Select(x => x.UserId).Contains(jobPostingCreateDto.UserId)
-                )
-                .AnyAsync();
+            var skills = await _service
+            .ReadManyNoTracked<Skill>()
+            .Where(x => jobPostingCreateDto.SkillIds.Contains(x.SkillId))
+            .AsTracking()
+            .ToListAsync();
 
-            if (!company)
-                return Conflict("Company with specified Id was not found or You have no permission to post from its name.");
+            if (skills.Count != jobPostingCreateDto.SkillIds.Count)
+                return Conflict("Not All Skill id`s were found");
 
-            var experience = await _service
-                .ReadManyNoTracked<Experience>()
-                .Where(x => x.ExperienceId == jobPostingCreateDto.ExperienceId)
-                .AnyAsync();
+            var benefits = await _service
+            .ReadManyNoTracked<Benefit>()
+            .Where(x => jobPostingCreateDto.BenefitIds.Contains(x.BenefitId))
+            .AsTracking()
+            .ToListAsync();
 
-            if (!experience)
-                return Conflict("Experience with specified id not found.");
+            if (benefits.Count != jobPostingCreateDto.BenefitIds.Count)
+                return Conflict("Not All Benefit id`s were found");
+
+            jobPostingCreateDto.CompanyId = companyId;
+            jobPostingCreateDto.Skills = skills;
+            jobPostingCreateDto.Benefits = benefits;
 
             await _service
                 .CreateAndSaveAsync(jobPostingCreateDto);
@@ -158,17 +165,25 @@ public class JobPostingController : ControllerWithDatabaseAccess
         }
     }
 
+    [Authorize(Roles = "Company")]
     [HttpGet("{Id}")]
     public async Task<ActionResult<JobPostingReadFullDto>> ReadJobPostingAsync(
         [FromRoute] int Id
     )
     {
+        string bearer = HttpContext.Request.Headers["Authorization"];
+
+        int companyId = JwtService.GetJwtUserIdClaim(bearer);
+
         if (Id < 1)
             return BadRequest("Job Posting Id cannot be less than 1.");
 
         var jobPosting = await _service
-            .ReadSingleAsync<JobPostingReadFullDto>(Id);
+            .ReadSingleAsync<JobPostingReadFullDto>(
+                x => x.JobPostingId == Id &&
+                x.CompanyId == companyId
+            );
 
-        return Ok(jobPosting);
+        return jobPosting == default ? BadRequest("No JobPosting with such id that you can access.") : Ok(jobPosting);
     }
 }

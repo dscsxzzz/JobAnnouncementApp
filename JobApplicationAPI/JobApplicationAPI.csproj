@@ -2,19 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+	<PreserveCompilationContext>true</PreserveCompilationContext>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Scaffold\**" />
-    <Compile Remove="Shared\Models\Dtos\JobApplicationDto\**" />
     <Content Remove="Scaffold\**" />
-    <Content Remove="Shared\Models\Dtos\JobApplicationDto\**" />
     <EmbeddedResource Remove="Scaffold\**" />
-    <EmbeddedResource Remove="Shared\Models\Dtos\JobApplicationDto\**" />
     <None Remove="Scaffold\**" />
-    <None Remove="Shared\Models\Dtos\JobApplicationDto\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,7 +32,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.5.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.25.0" />
-    <PackageReference Include="Npgsql" Version="8.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>

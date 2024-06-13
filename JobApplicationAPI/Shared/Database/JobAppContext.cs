@@ -1,6 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using JobApplicationAPI.Shared.Models.ApplicationModels;
+using JobApplicationAPI.Shared.Models.BenefitModels;
+using JobApplicationAPI.Shared.Models.CompanyModels;
 using JobApplicationAPI.Shared.Models.Entities;
+using JobApplicationAPI.Shared.Models.JobPostingModels;
+using JobApplicationAPI.Shared.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobApplicationAPI.Shared.Database;
@@ -140,11 +143,6 @@ public partial class JobAppContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("JobPosting_ExperienceId_fkey");
 
-            entity.HasOne(d => d.User).WithMany(p => p.JobPostings)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("JobPosting_UserId_fkey");
-
             entity.HasMany(d => d.Benefits).WithMany(p => p.JobPostings)
                 .UsingEntity<Dictionary<string, object>>(
                     "JobPostingBenefit",
@@ -201,11 +199,6 @@ public partial class JobAppContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(20);
             entity.Property(e => e.Password).HasMaxLength(100);
             entity.Property(e => e.PhoneNumber).HasMaxLength(15);
-            entity.Property(e => e.UserStatus).HasMaxLength(10);
-
-            entity.HasOne(d => d.Company).WithMany(p => p.Users)
-                .HasForeignKey(d => d.CompanyId)
-                .HasConstraintName("User_CompanyId_fkey");
 
             entity.HasMany(d => d.Skills).WithMany(p => p.Users)
                 .UsingEntity<Dictionary<string, object>>(

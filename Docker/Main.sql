@@ -2,7 +2,7 @@
 CREATE OR REPLACE FUNCTION set_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
-  NEW.RowCreated := now();
+  NEW."RowCreated" := now();
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -23,7 +23,7 @@ CREATE TABLE "Category"
 );
 
 INSERT INTO "Category"("Name")
-VALUES('Frontend'),('Backend'),('Fullstack'),('Dev-Ops');
+VALUES('Frontend'),('Backend'),('Fullstack'),('DevOps');
 
 CREATE TABLE "Experience"
 (
@@ -41,17 +41,13 @@ CREATE TABLE "Skill"
 );
 
 INSERT INTO "Skill"("Name")
-VALUES('Sent'),('Opened'),('Rejected'),('Offer');
+VALUES('React'),('.NET'),('C#'),('JavaScript');
 
 CREATE TABLE "Benefit"
 (
 	"BenefitId" Serial PRIMARY KEY,
-	"Name" VARCHAR(20) NOT NULL
+	"Name" VARCHAR(100) NOT NULL
 );
-
-INSERT INTO "Benefit"("Name")
-VALUES('Sent'),('Opened'),('Rejected'),('Offer');
-
 
 CREATE TABLE "Company"
 (
@@ -59,6 +55,7 @@ CREATE TABLE "Company"
 	"Name" VARCHAR(20) NOT NULL,
 	"Address" VARCHAR(20) NOT NULL,
 	"Email" VARCHAR(50) NOT NULL,
+	"Password" VARCHAR(100) NOT NULL,
 	"LinkToSite" VARCHAR(100)
 );
 
@@ -71,9 +68,6 @@ CREATE TABLE "User"
 	"Address" VARCHAR(20) NOT NULL,
 	"ResumeId" Integer,
 	"UserStatus" VARCHAR(10),
-	"CompanyId" Integer 
-		REFERENCES "Company"("CompanyId")
-		Default NULL,
 	"Email" VARCHAR(50) NOT NULL,
 	"PhoneNumber" VARCHAR(15) NOT NULL
 );
@@ -82,7 +76,6 @@ CREATE TABLE "JobPosting"
 (
 	"JobPostingId" Serial PRIMARY KEY,
 	"CategoryId" Integer NOT NULL REFERENCES "Category"("CategoryId"),
-	"UserId" Integer NOT NULL REFERENCES "User"("UserId"),
 	"CompanyId" Integer NOT NULL REFERENCES "Company"("CompanyId"),
 	"SalaryMin" Integer NOT NULL,
 	"SalaryMax" Integer NOT NULL,
@@ -91,7 +84,7 @@ CREATE TABLE "JobPosting"
 	"ExpirationDate" timestamp with time zone,
 	"RowCreated" timestamp with time zone,
 	"ExperienceId" Integer NOT NULL REFERENCES "Experience"("ExperienceId"),
-	"Location" VARCHAR(20) NOT NULL,
+	"Location" VARCHAR(50) NOT NULL,
 	"Hybrid" Boolean NOT NULL,
 	"Remote" Boolean NOT NULL
 );
@@ -106,6 +99,7 @@ CREATE TABLE "Application"
 	"ApplicationId" Serial PRIMARY KEY,
 	"UserId" Integer NOT NULL REFERENCES "User"("UserId"),
 	"JobPostingId" Integer NOT NULL REFERENCES "JobPosting"("JobPostingId"),
+	"CompanyId" Integer NOT NULL REFERENCES "Company"("CompanyId"),
 	"ApplicationStatusId" Integer NOT NULL 
 		REFERENCES "ApplicationStatus"("ApplicationStatusId")
 		DEFAULT 1,
