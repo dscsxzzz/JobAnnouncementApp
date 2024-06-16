@@ -110,7 +110,7 @@ export default function CandidateRegister() {
         }
     }
 
-    const buttonStyle = `rounded-lg bg-gray-800 text-white px-5 py-2 cursor-pointer transition duration-500 hover:text-black hover:bg-gray-600`
+    const buttonStyle = `rounded-lg text-white px-5 py-2 cursor-pointer transition duration-500 hover:text-black hover:bg-gray-600`
 
     return (
         <div className="mx-auto w-1/2">
@@ -241,9 +241,9 @@ export default function CandidateRegister() {
                                         Skills[key as keyof typeof Skills]
                                     )
                                 }
-                                className={`${buttonStyle} ${selectedSkills.includes(Skills[key as keyof typeof Skills]) ? 'bg-blue-500' : ''}`}
+                                className={`${buttonStyle} ${selectedSkills.includes(Skills[key as keyof typeof Skills]) ? 'bg-blue-500' : 'bg-gray-800'}`}
                             >
-                                {key}
+                                {key === "DotNet" ? ".Net" : (key === "CSharp" ? "C#" : key)}
                             </button>
                         ))}
                 </div>
