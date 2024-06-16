@@ -6,7 +6,7 @@ type Props = {}
 
 export default function AuthLayout({}: Props) {
     return (
-        <>
+        <div className="flex flex-col min-h-screen">
             <nav className="bg-gray-900 text-white flex justify-between text-center border-2 border-gray-800">
                 <div className="">
                     <ul className="flex items-center">
@@ -26,10 +26,10 @@ export default function AuthLayout({}: Props) {
                     </ul>
                 </div>
             </nav>
-            <div className="mt-20">
-                <Outlet />
-            </div>
+                <div className="flex-grow mt-20 mb-20">
+                    <Outlet />
+                </div>
             <Footer />
-        </>
+        </div>
     )
 }
