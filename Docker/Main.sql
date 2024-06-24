@@ -149,12 +149,12 @@ VALUES
 ('Jordan', 'Taylor', 'pQ8Vz!lR5', '987 Pine Rd, CA', NULL, 'active', 'jordan.taylor@gmail.com', '+1-415-765-4321');
 
 -- Sample data for Job Postings
-INSERT INTO "JobPosting"("CategoryId", "CompanyId", "SalaryMin", "SalaryMax", "Description", "WhatWeOffer", "ExpirationDate", "ExperienceId", "Location", "Hybrid", "Remote")
+INSERT INTO "JobPosting"("JobPostingId", "CategoryId", "CompanyId", "SalaryMin", "SalaryMax", "Description", "WhatWeOffer", "ExpirationDate", "ExperienceId", "Location", "Hybrid", "Remote")
 VALUES 
-(1, 1, 60000, 80000, 'We are looking for a skilled frontend developer...', 'Great benefits including...', '2024-12-31T23:59:59Z', 3, 'New York', TRUE, FALSE),
-(2, 2, 70000, 100000, 'Join our backend team and work with cutting-edge...', 'We offer flexible working hours...', '2024-12-31T23:59:59Z', 2, 'San Francisco', FALSE, TRUE),
-(3, 3, 75000, 110000, 'As a fullstack developer, you will...', 'Comprehensive health insurance...', '2024-12-31T23:59:59Z', 1, 'Remote', TRUE, TRUE),
-(4, 4, 80000, 120000, 'DevOps position with focus on cloud infrastructure...', '401(k) and stock options...', '2024-12-31T23:59:59Z', 4, 'Seattle', FALSE, FALSE);
+(1, 1, 1, 60000, 80000, 'We are looking for a skilled frontend developer...', 'Great benefits including...', '2024-12-31T23:59:59Z', 3, 'New York', TRUE, FALSE),
+(2, 2, 2, 70000, 100000, 'Join our backend team and work with cutting-edge...', 'We offer flexible working hours...', '2024-12-31T23:59:59Z', 2, 'San Francisco', FALSE, TRUE),
+(3, 3, 3, 75000, 110000, 'As a fullstack developer, you will...', 'Comprehensive health insurance...', '2024-12-31T23:59:59Z', 1, 'Remote', TRUE, TRUE),
+(4, 4, 4, 80000, 120000, 'DevOps position with focus on cloud infrastructure...', '401(k) and stock options...', '2024-12-31T23:59:59Z', 4, 'Seattle', FALSE, FALSE);
 
 -- Sample data for Applications
 INSERT INTO "Application"("UserId", "JobPostingId", "CompanyId", "ApplicationStatusId", "DesiredSallaryMin", "DesiredSallaryMax", "ExperienceYears", "WhenCanStart", "PreviousWorkPlace", "MessageToRecruiter")

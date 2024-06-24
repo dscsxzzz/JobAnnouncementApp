@@ -25,111 +25,71 @@ public class JobPostingController : ControllerWithDatabaseAccess
 
     [HttpGet]
     public async Task<ActionResult<List<JobPostingReadDto>>> ListJobPostingsAsync(
-    [FromQuery] List<int>? skills = null,
-    [FromQuery] List<int>? experience = null,
-    [FromQuery] int? category = null,
-    [FromQuery] bool hybrid = true,
-    [FromQuery] bool remote = true,
-    [FromQuery] int salaryMin = 0,
-    [FromQuery] int page = 1
-)
+        [FromQuery] List<int> skills = null,
+        [FromQuery] List<int>? experience = null,
+        [FromQuery] int? category = null,
+        [FromQuery] bool hybrid = true,
+        [FromQuery] bool remote = true,
+        [FromQuery] int sallaryMin = 0,
+        [FromQuery] int page = 1
+    )
     {
         if (page < 1)
             page = 1;
 
-        if (experience == null)
+        if (experience is null)
             experience = new List<int> { 1, 2, 3 };
 
-        IQueryable<JobPostingReadDto> query = _service
-            .ReadManyNoTracked<JobPostingReadDto>()
-            .Where(x => experience.Contains(x.ExperienceId))
-            .Where(x => x.SalaryMin <= salaryMin && x.SalaryMax >= salaryMin)
-            .Where(x => (x.Hybrid == hybrid) || (x.Remote == remote));
+        if (skills is null)
+            skills = new() { 1, 2, 3, 4 };
 
-        if (category.HasValue)
+        List<JobPostingReadDto> jobPostings = new();
+
+        if (category == null)
         {
-            query = query.Where(x => x.CategoryId == category);
+            jobPostings = await _service
+                .ReadManyNoTracked<JobPostingReadDto>()
+                .Where(
+                    x => skills.Intersect(x.Skills.Select(x => x.SkillId)).Any()
+                )
+                .Where(
+                    x => experience.Contains(x.ExperienceId)
+                )
+                .Where(
+                    x => x.SalaryMin <= sallaryMin && x.SalaryMax >= sallaryMin
+                )
+                .Where(
+                    x => (x.Hybrid == hybrid) || (x.Remote == remote)
+                )
+
+                .Skip((page - 1) * 20)
+                .Take(20)
+                .ToListAsync();
         }
-
-        List<JobPostingReadDto> jobPostings = await query
-            .Skip((page - 1) * (category.HasValue ? 10 : 20))
-            .Take(category.HasValue ? 10 : 20)
-            .ToListAsync();
-
-        if (skills != null && skills.Any())
+        else
         {
-            jobPostings = jobPostings
-                .Where(x => x.Skills.Select(s => s.SkillId).Intersect(skills).Any())
-                .ToList();
+            jobPostings = await _service
+                .ReadManyNoTracked<JobPostingReadDto>()
+                .Where(
+                    x => x.CategoryId == category
+                )
+                .Where(
+                    x => skills.Intersect(x.Skills.Select(x => x.SkillId)).Any()
+                )
+                .Where(
+                    x => x.SalaryMin > sallaryMin
+                )
+                .Where(
+                    x => (x.Hybrid == hybrid) || (x.Remote == remote)
+                )
+
+                .Skip((page - 1) * 10)
+                .Take(10)
+                .ToListAsync();
         }
 
         return Ok(jobPostings);
     }
-
-    //[HttpGet]
-    //public async Task<ActionResult<List<JobPostingReadDto>>> ListJobPostingsAsync(
-    //    [FromQuery] List<int>? skills = null,
-    //    [FromQuery] List<int>? experience = null,
-    //    [FromQuery] int? category = null,
-    //    [FromQuery] bool hybrid = true,
-    //    [FromQuery] bool remote = true,
-    //    [FromQuery] int sallaryMin = 0,
-    //    [FromQuery] int page = 1
-    //)
-    //{
-    //    if (page < 1)
-    //        page = 1;
-
-    //    if(experience == null)
-    //        experience = new List<int> { 1, 2, 3 };
-
-    //    List <JobPostingReadDto> jobPostings= new();
-
-    //    if (category == null)
-    //    {
-    //        jobPostings = await _service
-    //            .ReadManyNoTracked<JobPostingReadDto>()
-    //            .Where(
-    //                x => ListExtensions.IntersectWithFallback(x.Skills.Select(x => x.SkillId), skills).Any()
-    //            )
-    //            .Where(
-    //                x => experience.Contains(x.ExperienceId)
-    //            )
-    //            .Where(
-    //                x => x.SalaryMin <= sallaryMin && x.SalaryMax >= sallaryMin
-    //            )
-    //            .Where(
-    //                x => (x.Hybrid == hybrid) || (x.Remote == remote)
-    //            )
-
-    //            .Skip((page - 1) * 20)
-    //            .Take(20)
-    //            .ToListAsync();
-    //    }
-    //    else
-    //    {
-    //        jobPostings = await _service
-    //            .ReadManyNoTracked<JobPostingReadDto>()
-    //            .Where(
-    //                x => x.CategoryId == category
-    //            )
-    //            .Where(
-    //                x => ListExtensions.IntersectWithFallback(x.Skills.Select(x => x.SkillId), skills).Any()
-    //            )
-    //            .Where(
-    //                x => x.SalaryMin > sallaryMin
-    //            )
-    //            .Where(
-    //                x => (x.Hybrid == hybrid) || (x.Remote == remote)
-    //            )
-
-    //            .Skip((page - 1) * 10)
-    //            .Take(10)
-    //            .ToListAsync();
-    //    }
-
-    //    return Ok(jobPostings);
-    //}
 
     [Authorize]
     [HttpGet("my-job-postings")]

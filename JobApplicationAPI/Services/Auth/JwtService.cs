@@ -15,7 +15,8 @@ public static class JwtService
         {
             new (ClaimTypes.Authentication, userId),
             new (ClaimTypes.Email, email),
-            new (ClaimTypes.Role, role)
+            new (ClaimTypes.Role, role),
+            new (ClaimTypes.UserData, "User")
         };
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JobApplicationProjectSecurityKey"));

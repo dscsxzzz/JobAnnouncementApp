@@ -31,7 +31,7 @@ public class CompanyController : ControllerWithDatabaseAccess
 
         var companies = await _service
             .ReadManyNoTracked<CompanyReadDto>()
-            .Where(x => x.AvailableJobs > 1 == haveJobs)
+            .Where(x => (x.AvailableJobs > 1) == haveJobs)
             .Skip((page - 1) * 10)
             .Take(10)
             .ToListAsync();
