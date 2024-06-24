@@ -107,6 +107,7 @@ public class ApplicationController : ControllerWithDatabaseAccess
             applicationUpdateDto.ExperienceYears = apliication.ExperienceYears;
             applicationUpdateDto.WhenCanStart = apliication.WhenCanStart;
             applicationUpdateDto.PreviousWorkPlace = apliication.PreviousWorkPlace;
+            applicationUpdateDto.MessageToRecruiter = apliication.MessageToRecruiter;
 
             await _service.UpdateAndSaveAsync( applicationUpdateDto );
 

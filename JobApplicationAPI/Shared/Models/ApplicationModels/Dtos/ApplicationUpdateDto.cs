@@ -29,11 +29,11 @@ public partial class ApplicationUpdateDto : ILinkToEntity<Application>
     public double ExperienceYears { get; set; }
 
     [JsonIgnore]
-    public string WhenCanStart { get; set; } = null!;
+    public string? WhenCanStart { get; set; }
 
     [JsonIgnore]
-    public string PreviousWorkPlace { get; set; } = null!;
+    public string? PreviousWorkPlace { get; set; }
 
     [JsonIgnore]
-    public string MessageToRecruiter { get; set; } = null!;
+    public string? MessageToRecruiter { get; set; }
 }

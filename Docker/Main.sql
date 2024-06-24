@@ -106,9 +106,9 @@ CREATE TABLE "Application"
 	"DesiredSallaryMin" Integer NOT NULL,
 	"DesiredSallaryMax" Integer NOT NULL,
 	"ExperienceYears" Float NOT NULL,
-	"WhenCanStart" VARCHAR(30) NOT NULL,
-	"PreviousWorkPlace" VARCHAR(30) NOT NULL,
-	"MessageToRecruiter" VARCHAR(500) NOT NULL
+	"WhenCanStart" VARCHAR(30),
+	"PreviousWorkPlace" VARCHAR(30),
+	"MessageToRecruiter" VARCHAR(500)
 );
 
 CREATE TABLE "UserSkill"

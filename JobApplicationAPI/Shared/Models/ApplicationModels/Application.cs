@@ -25,11 +25,11 @@ public partial class Application
 
     public double ExperienceYears { get; set; }
 
-    public string WhenCanStart { get; set; } = null!;
+    public string? WhenCanStart { get; set; }
 
-    public string PreviousWorkPlace { get; set; } = null!;
+    public string? PreviousWorkPlace { get; set; }
 
-    public string MessageToRecruiter { get; set; } = null!;
+    public string? MessageToRecruiter { get; set; }
 
     public virtual ApplicationStatus ApplicationStatus { get; set; } = null!;
 
