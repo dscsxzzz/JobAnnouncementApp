@@ -67,7 +67,7 @@ CREATE TABLE "User"
 	"Password" VARCHAR(100) NOT NULL,
 	"Address" VARCHAR(20) NOT NULL,
 	"ResumeId" Integer,
-	"UserStatus" VARCHAR(10),
+	"UserStatus" VARCHAR(10) DEFAULT 'User',
 	"Email" VARCHAR(50) NOT NULL,
 	"PhoneNumber" VARCHAR(15) NOT NULL
 );
