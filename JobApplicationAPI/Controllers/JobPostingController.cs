@@ -28,8 +28,8 @@ public class JobPostingController : ControllerWithDatabaseAccess
         [FromQuery] List<int>? skills = null,
         [FromQuery] List<int>? experience = null,
         [FromQuery] int? category = null,
-        [FromQuery] bool hybrid = true,
-        [FromQuery] bool remote = true,
+        [FromQuery] bool hybrid = false,
+        [FromQuery] bool remote = false,
         [FromQuery] int sallaryMin = 0,
         [FromQuery] int page = 1
     )
@@ -43,48 +43,38 @@ public class JobPostingController : ControllerWithDatabaseAccess
         if (skills == null || !skills.Any())
             skills = new List<int> { 1, 2, 3, 4 };
 
-        List<JobPostingReadDto> jobPostings = new();
+        IQueryable<JobPostingReadDto> query = _service.ReadManyNoTracked<JobPostingReadDto>();
 
-        if (category == null)
-        {
-            jobPostings = await _service
-                .ReadManyNoTracked<JobPostingReadDto>()
-                .Where(x => x.Skills.Any(s => skills.Contains(s.SkillId)))
-                .Where(
-                    x => experience.Contains(x.ExperienceId)
-                )
-                .Where(
-                    x => x.SalaryMin >= sallaryMin
-                )
-                .Where(
-                    x => (x.Hybrid == hybrid) || (x.Remote == remote)
-                )
+        if (category is not null)
+            query = query
+                .Where(x => x.CategoryId == category);
 
-                .Skip((page - 1) * 20)
-                .Take(20)
-                .ToListAsync();
+        if (hybrid && remote)
+            query = query
+                .Where(x => x.Hybrid == hybrid || x.Remote == remote);
+        else 
+        { 
+            if(hybrid)
+                query = query
+                    .Where(x => x.Hybrid == hybrid);
+
+            if(remote)
+                query = query
+                    .Where(x => x.Remote == remote);
         }
-        else
-        {
-            jobPostings = await _service
-                .ReadManyNoTracked<JobPostingReadDto>()
-                .Where(
-                    x => x.CategoryId == category
-                )
-                .Where(x => x.Skills.Any(s => skills.Contains(s.SkillId)))
-                .Where(
-                    x => experience.Contains(x.ExperienceId)
-                )
-                .Where(
-                    x => x.SalaryMin >= sallaryMin
-                )
-                .Where(
-                    x => (x.Hybrid == hybrid) || (x.Remote == remote)
-                )
-                .Skip((page - 1) * 10)
-                .Take(10)
-                .ToListAsync();
-        }
+        query = query
+            .Where(x => x.Skills.Any(s => skills.Contains(s.SkillId)))
+            .Where(
+                x => experience.Contains(x.ExperienceId)
+            )
+            .Where(
+                x => x.SalaryMin >= sallaryMin
+            );
+
+        var jobPostings = await query
+            .Skip((page - 1) * 20)
+            .Take(20)
+            .ToListAsync();
 
         return Ok(jobPostings);
     }
