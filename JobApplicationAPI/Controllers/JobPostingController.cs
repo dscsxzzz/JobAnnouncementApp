@@ -25,7 +25,7 @@ public class JobPostingController : ControllerWithDatabaseAccess
 
     [HttpGet]
     public async Task<ActionResult<List<JobPostingReadDto>>> ListJobPostingsAsync(
-        [FromQuery] List<int> skills = null,
+        [FromQuery] List<int>? skills = null,
         [FromQuery] List<int>? experience = null,
         [FromQuery] int? category = null,
         [FromQuery] bool hybrid = true,
@@ -37,11 +37,11 @@ public class JobPostingController : ControllerWithDatabaseAccess
         if (page < 1)
             page = 1;
 
-        if (experience is null)
+        if (experience == null || !experience.Any())
             experience = new List<int> { 1, 2, 3 };
 
-        if (skills is null)
-            skills = new() { 1, 2, 3, 4 };
+        if (skills == null || !skills.Any())
+            skills = new List<int> { 1, 2, 3, 4 };
 
         List<JobPostingReadDto> jobPostings = new();
 
@@ -49,14 +49,12 @@ public class JobPostingController : ControllerWithDatabaseAccess
         {
             jobPostings = await _service
                 .ReadManyNoTracked<JobPostingReadDto>()
-                .Where(
-                    x => skills.Intersect(x.Skills.Select(x => x.SkillId)).Any()
-                )
+                .Where(x => x.Skills.Any(s => skills.Contains(s.SkillId)))
                 .Where(
                     x => experience.Contains(x.ExperienceId)
                 )
                 .Where(
-                    x => x.SalaryMin <= sallaryMin && x.SalaryMax >= sallaryMin
+                    x => x.SalaryMin >= sallaryMin
                 )
                 .Where(
                     x => (x.Hybrid == hybrid) || (x.Remote == remote)
@@ -73,16 +71,16 @@ public class JobPostingController : ControllerWithDatabaseAccess
                 .Where(
                     x => x.CategoryId == category
                 )
+                .Where(x => x.Skills.Any(s => skills.Contains(s.SkillId)))
                 .Where(
-                    x => skills.Intersect(x.Skills.Select(x => x.SkillId)).Any()
+                    x => experience.Contains(x.ExperienceId)
                 )
                 .Where(
-                    x => x.SalaryMin > sallaryMin
+                    x => x.SalaryMin >= sallaryMin
                 )
                 .Where(
                     x => (x.Hybrid == hybrid) || (x.Remote == remote)
                 )
-
                 .Skip((page - 1) * 10)
                 .Take(10)
                 .ToListAsync();
