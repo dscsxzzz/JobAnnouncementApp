@@ -16,5 +16,5 @@ public partial class CompanyReadFullForCompaniesDto : ILinkToEntity<Company>
 
     public string? LinkToSite { get; set; }
 
-    public virtual ICollection<JobPostingReadFullDto> JobPostings { get; set; } = new List<JobPostingReadFullDto>();
+    public virtual ICollection<JobPostingReadDto> JobPostings { get; set; } = new List<JobPostingReadDto>();
 }
