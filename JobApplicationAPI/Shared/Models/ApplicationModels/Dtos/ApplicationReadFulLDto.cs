@@ -20,6 +20,6 @@ public partial class ApplicationReadFullDto : ILinkToEntity<Application>
     public string PreviousWorkPlace { get; set; } = null!;
     public string MessageToRecruiter { get; set; } = null!;
     public virtual ApplicationStatusReadDto ApplicationStatus { get; set; } = null!;
-    public virtual UserReadDto User { get; set; } = null!;
+    public virtual UserReadDtoForCompanies User { get; set; } = null!;
     public virtual JobPostingReadDto JobPosting { get; set; } = null!;
 }
