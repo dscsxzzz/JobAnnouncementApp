@@ -22,6 +22,7 @@ public partial class UserUpdateDto : ILinkToEntity<User>
 
     public string PhoneNumber { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual ICollection<Skill>? Skills { get; set; } = new List<Skill>();
     public virtual ISet<int> SkillIds { get; set; } = new HashSet<int>();
 }

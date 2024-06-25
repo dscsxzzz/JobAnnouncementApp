@@ -44,7 +44,11 @@ public class AuthController : ControllerWithDatabaseAccess
 
         var token = JwtService.GenerateJwtToken(user.Email, "JobSeeker", Convert.ToString(user.UserId));
 
-        return Ok(token);
+        return Ok(new ResponseUser
+        {
+            token = token,
+            user = user
+        });
     }
 
     [HttpPost("register/user")]
@@ -141,7 +145,11 @@ public class AuthController : ControllerWithDatabaseAccess
 
         var token = JwtService.GenerateJwtToken(company.Email, "Company", Convert.ToString(company.CompanyId));
 
-        return Ok(token);
+        return Ok(new ResponseCompany 
+        {
+            token = token,
+            company = company
+        });
     }
 
     [HttpPost("register/company")]
@@ -207,4 +215,20 @@ public class AuthController : ControllerWithDatabaseAccess
 
         return Ok();
     }
+
+    private class ResponseCompany
+    {
+        public string token { get; set; }
+
+        public Company company { get; set; }
+    }
+
+    private class ResponseUser
+    {
+        public string token { get; set; }
+
+        public User user { get; set; }
+    }
 }
+
+
