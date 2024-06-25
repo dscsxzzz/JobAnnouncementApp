@@ -156,23 +156,17 @@ public class JobPostingController : ControllerWithDatabaseAccess
         }
     }
 
-    [Authorize(Roles = "Company")]
     [HttpGet("{Id}")]
-    public async Task<ActionResult<JobPostingReadFullDto>> ReadJobPostingAsync(
+    public async Task<ActionResult<JobPostingReadDto>> ReadJobPostingAsync(
         [FromRoute] int Id
     )
     {
-        string bearer = HttpContext.Request.Headers["Authorization"];
-
-        int companyId = JwtService.GetJwtUserIdClaim(bearer);
-
         if (Id < 1)
             return BadRequest("Job Posting Id cannot be less than 1.");
 
         var jobPosting = await _service
-            .ReadSingleAsync<JobPostingReadFullDto>(
-                x => x.JobPostingId == Id &&
-                x.CompanyId == companyId
+            .ReadSingleAsync<JobPostingReadDto>(
+                x => x.JobPostingId == Id
             );
 
         return jobPosting == default ? BadRequest("No JobPosting with such id that you can access.") : Ok(jobPosting);
