@@ -1,4 +1,5 @@
 using GenericServices;
+using JobApplicationAPI.Shared.Models.ApplicationModels;
 using JobApplicationAPI.Shared.Models.Entities;
 using JobApplicationAPI.Shared.Models.UserModels;
 
@@ -17,6 +18,8 @@ public partial class UserReadDto : ILinkToEntity<User>
     public string Email { get; set; } = null!;
 
     public string PhoneNumber { get; set; } = null!;
+
+    public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
     public virtual ICollection<Skill> Skills { get; set; } = new List<Skill>();
 }

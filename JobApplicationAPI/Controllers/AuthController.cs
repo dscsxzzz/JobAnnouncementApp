@@ -44,10 +44,12 @@ public class AuthController : ControllerWithDatabaseAccess
 
         var token = JwtService.GenerateJwtToken(user.Email, "JobSeeker", Convert.ToString(user.UserId));
 
+        var userDto = await _service.ReadSingleAsync<UserReadDto>(x => x.Email == userDto.Email);
+
         return Ok(new ResponseUser
         {
             token = token,
-            user = user
+            user = userDto
         });
     }
 
@@ -145,10 +147,12 @@ public class AuthController : ControllerWithDatabaseAccess
 
         var token = JwtService.GenerateJwtToken(company.Email, "Company", Convert.ToString(company.CompanyId));
 
+        var companyDto = await _service.ReadSingleAsync<CompanyReadFullForCompaniesDto>(x => x.Email == companyLoginDto.Email);
+
         return Ok(new ResponseCompany 
         {
             token = token,
-            company = company
+            company = companyDto
         });
     }
 
@@ -220,14 +224,14 @@ public class AuthController : ControllerWithDatabaseAccess
     {
         public string token { get; set; }
 
-        public Company company { get; set; }
+        public CompanyReadFullForCompaniesDto company { get; set; }
     }
 
     private class ResponseUser
     {
         public string token { get; set; }
 
-        public User user { get; set; }
+        public UserReadDto user { get; set; }
     }
 }
 
