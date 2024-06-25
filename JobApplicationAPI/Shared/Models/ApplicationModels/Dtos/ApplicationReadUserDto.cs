@@ -1,4 +1,4 @@
-﻿using GenericServices;
+using GenericServices;
 using JobApplicationAPI.Shared.Models.ApplicationModels;
 using JobApplicationAPI.Shared.Models.Entities;
 using JobApplicationAPI.Shared.Models.JobPostingModels.Dtos;
@@ -6,7 +6,7 @@ using JobApplicationAPI.Shared.Models.UserModels.Dtos;
 
 namespace JobApplicationAPI.Shared.Models.ApplicationModels.Dtos;
 
-public partial class ApplicationReadFullDto : ILinkToEntity<Application>
+public partial class ApplicationReadUserDto : ILinkToEntity<Application>
 {
     public int ApplicationId { get; set; }
     public int UserId { get; set; }
@@ -20,6 +20,5 @@ public partial class ApplicationReadFullDto : ILinkToEntity<Application>
     public string PreviousWorkPlace { get; set; } = null!;
     public string MessageToRecruiter { get; set; } = null!;
     public virtual ApplicationStatusReadDto ApplicationStatus { get; set; } = null!;
-    public virtual UserReadDto User { get; set; } = null!;
     public virtual JobPostingReadDto JobPosting { get; set; } = null!;
 }

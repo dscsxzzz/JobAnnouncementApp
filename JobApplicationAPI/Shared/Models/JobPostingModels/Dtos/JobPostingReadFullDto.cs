@@ -2,6 +2,7 @@ using GenericServices;
 using JobApplicationAPI.Shared.Models.ApplicationModels;
 using JobApplicationAPI.Shared.Models.ApplicationModels.Dtos;
 using JobApplicationAPI.Shared.Models.BenefitModels;
+using JobApplicationAPI.Shared.Models.BenefitModels.Dtos;
 using JobApplicationAPI.Shared.Models.Entities;
 using JobApplicationAPI.Shared.Models.JobPostingModels;
 
@@ -37,11 +38,11 @@ public partial class JobPostingReadFullDto : ILinkToEntity<JobPosting>
 
     public virtual ICollection<ApplicationReadFullDto> Applications { get; set; } = new List<ApplicationReadFullDto>();
 
-    public virtual Experience Experience { get; set; } = null!;
+    public virtual ExperienceReadDto Experience { get; set; } = null!;
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual CategoryReadDto Category { get; set; } = null!;
 
-    public virtual ICollection<Benefit> Benefits { get; set; } = new List<Benefit>();
+    public virtual ICollection<BenefitReadDto> Benefits { get; set; } = new List<BenefitReadDto>();
 
-    public virtual ICollection<Skill> Skills { get; set; } = new List<Skill>();
+    public virtual ICollection<SkillReadDto> Skills { get; set; } = new List<SkillReadDto>();
 }
