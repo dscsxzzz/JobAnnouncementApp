@@ -38,7 +38,7 @@ public class JobPostingController : ControllerWithDatabaseAccess
             page = 1;
 
         if (experience == null || !experience.Any())
-            experience = new List<int> { 1, 2, 3 };
+            experience = new List<int> { 1, 2, 3, 4 };
 
         if (skills == null || !skills.Any())
             skills = new List<int> { 1, 2, 3, 4 };

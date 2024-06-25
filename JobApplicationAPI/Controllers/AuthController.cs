@@ -44,12 +44,12 @@ public class AuthController : ControllerWithDatabaseAccess
 
         var token = JwtService.GenerateJwtToken(user.Email, "JobSeeker", Convert.ToString(user.UserId));
 
-        var userDto = await _service.ReadSingleAsync<UserReadDto>(x => x.Email == userDto.Email);
+        var userGetDto = await _service.ReadSingleAsync<UserReadDto>(x => x.Email == userDto.Email);
 
         return Ok(new ResponseUser
         {
             token = token,
-            user = userDto
+            user = userGetDto
         });
     }
 
