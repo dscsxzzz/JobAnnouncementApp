@@ -25,4 +25,6 @@ public partial class User
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
     public virtual ICollection<Skill> Skills { get; set; } = new List<Skill>();
+
+    public virtual ICollection<UserSkill> userSkills { get; set; } = new List<UserSkill>();
 }

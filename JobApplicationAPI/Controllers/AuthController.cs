@@ -206,7 +206,7 @@ public class AuthController : ControllerWithDatabaseAccess
             return StatusCode(403, "You cannot access this.");
 
 
-        var validatePassword = HasherService.VerifyPassword(company.Password, passwordDto.Password);
+        var validatePassword = HasherService.VerifyPassword(passwordDto.Password, company.Password);
 
         if (!validatePassword)
             return BadRequest("Wrong Password");

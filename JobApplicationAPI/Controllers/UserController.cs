@@ -14,6 +14,7 @@ using System.Security.Claims;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using WebCommon.Database;
+using JobApplicationAPI.Shared.Models;
 
 namespace JobApplicationAPI.Controllers;
 
@@ -45,14 +46,20 @@ public class UserController : ControllerWithDatabaseAccess
 
             if (user == default)
                 return NotFound("User with speicified id not found.");
-            
+
+
             userDto.UserId = userId;
 
             var skills = await _service
             .ReadManyNoTracked<Skill>()
-            .Where(x => userDto.SkillIds.Contains(x.SkillId) && !x.Users.Select(x => x.UserId).Contains(userDto.UserId))
+            .Where(x => userDto.SkillIds.Contains(x.SkillId))
             .ToListAsync();
 
+            foreach (var item in user.Skills.Select(x => x.SkillId))
+            {
+                await _service.DeleteAndSaveAsync<UserSkill>(userId, item);
+            }
+            
             userDto.Skills = skills;
 
             await _service.UpdateAndSaveAsync(userDto);

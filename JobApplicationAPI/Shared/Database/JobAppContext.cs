@@ -1,4 +1,5 @@
-﻿using JobApplicationAPI.Shared.Models.ApplicationModels;
+﻿using JobApplicationAPI.Shared.Models;
+using JobApplicationAPI.Shared.Models.ApplicationModels;
 using JobApplicationAPI.Shared.Models.BenefitModels;
 using JobApplicationAPI.Shared.Models.CompanyModels;
 using JobApplicationAPI.Shared.Models.Entities;
@@ -36,6 +37,8 @@ public partial class JobAppContext : DbContext
     public virtual DbSet<Skill> Skills { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<UserSkill> UserSkills { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -78,6 +81,24 @@ public partial class JobAppContext : DbContext
 
             entity.Property(e => e.StatusName).HasMaxLength(20);
         });
+
+        modelBuilder.Entity<UserSkill>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.SkillId }).HasName("UserSkill_pkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.userSkills)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("UserSkill_UserId_fkey");
+
+            entity.HasOne(d => d.Skill).WithMany(p => p.userSkills)
+                .HasForeignKey(d => d.SkillId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("UserSkill_SkillId_fkey");
+
+            entity.ToTable("UserSkill");
+        });
+
 
         modelBuilder.Entity<Benefit>(entity =>
         {
@@ -185,6 +206,9 @@ public partial class JobAppContext : DbContext
             entity.ToTable("Skill");
 
             entity.Property(e => e.Name).HasMaxLength(20);
+
+            entity.HasMany(d => d.Users).WithMany(p => p.Skills)
+                .UsingEntity<UserSkill>();
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -201,21 +225,7 @@ public partial class JobAppContext : DbContext
             entity.Property(e => e.PhoneNumber).HasMaxLength(15);
 
             entity.HasMany(d => d.Skills).WithMany(p => p.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserSkill",
-                    r => r.HasOne<Skill>().WithMany()
-                        .HasForeignKey("SkillId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("UserSkill_SkillId_fkey"),
-                    l => l.HasOne<User>().WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("UserSkill_UserId_fkey"),
-                    j =>
-                    {
-                        j.HasKey("UserId", "SkillId").HasName("UserSkill_pkey");
-                        j.ToTable("UserSkill");
-                    });
+                .UsingEntity<UserSkill>();
         });
 
         OnModelCreatingPartial(modelBuilder);
