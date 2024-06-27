@@ -108,7 +108,7 @@ export default function SearchBar({ setSearchParams }: Props) {
                         }
                     }}
                 >
-                    <div className="p-2 rounded-md rounded-bl-md w-full max-w-xl bg-white text-gray-800 focus:outline-none">
+                    <div className="text-lg p-2 rounded-md rounded-bl-md w-full max-w-xl bg-white text-gray-800 focus:outline-none cursor-pointer hover:text-white hover:bg-blue-500">
                         Filters
                     </div>
                 </div>
