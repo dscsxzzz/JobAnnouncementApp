@@ -51,6 +51,7 @@ public class UserController : ControllerWithDatabaseAccess
             .Where(x => userDto.SkillIds.Contains(x.SkillId) && !x.Users.Select(x => x.UserId).Contains(userDto.UserId))
             .ToListAsync();
 
+            userDto.UserId = userId;
             userDto.Skills = skills;
 
             await _service.UpdateAndSaveAsync(userDto);
