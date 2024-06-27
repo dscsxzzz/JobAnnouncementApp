@@ -45,13 +45,14 @@ public class UserController : ControllerWithDatabaseAccess
 
             if (user == default)
                 return NotFound("User with speicified id not found.");
+            
+            userDto.UserId = userId;
 
             var skills = await _service
             .ReadManyNoTracked<Skill>()
             .Where(x => userDto.SkillIds.Contains(x.SkillId) && !x.Users.Select(x => x.UserId).Contains(userDto.UserId))
             .ToListAsync();
 
-            userDto.UserId = userId;
             userDto.Skills = skills;
 
             await _service.UpdateAndSaveAsync(userDto);
