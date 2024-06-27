@@ -41,13 +41,10 @@ public class UserController : ControllerWithDatabaseAccess
             int userId = JwtService.GetJwtUserIdClaim(bearer);
 
             var user = await _service
-                .ReadSingleAsync<UserReadDto>(userDto.UserId);
+                .ReadSingleAsync<UserReadDto>(userId);
 
             if (user == default)
                 return NotFound("User with speicified id not found.");
-
-            if (user.UserId != userId)
-                return StatusCode(403, "You cannot access this.");
 
             var skills = await _service
             .ReadManyNoTracked<Skill>()

@@ -7,6 +7,7 @@ namespace JobApplicationAPI.Shared.Models.UserModels.Dtos;
 
 public partial class UserUpdateDto : ILinkToEntity<User>
 {
+    [JsonIgnore]
     public int UserId { get; set; }
 
     public string Name { get; set; } = null!;

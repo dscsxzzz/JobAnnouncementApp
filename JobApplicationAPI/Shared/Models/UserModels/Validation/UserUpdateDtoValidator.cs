@@ -7,8 +7,6 @@ public partial class UserUpdateDtoValidator : AbstractValidator<UserUpdateDto>
 {
     public UserUpdateDtoValidator()
     {
-        RuleFor(x => x.UserId)
-            .GreaterThan(0);
         RuleFor(x => x.Name)
             .NotEmpty()
             .MaximumLength(20);
