@@ -135,7 +135,7 @@ CREATE TABLE "JobPostingBenefit"
 -- Sample data for Companies
 INSERT INTO "Company"("Name", "Address", "Email", "Password", "LinkToSite")
 VALUES 
-('Barker & Allen', '2652 Ramos St, WI', 'keith46@costa.net', '289OJDwUs^', 'http://garcia.com/'),
+('Barker & Allen', '2652 Ramos St, WI', 'keith46@costa.net', 'ab5f24b98800c1349aefefcc5e1b29b9ea07e86d0a061103de20fcb4fdfc8be5', 'http://garcia.com/'), --  289OJDwUs^
 ('Case & Neal', '6473 Jones Mews, ID', 'justinstone@warner.com', '^&C_ANJz95', 'http://www.leon.com/'),
 ('Schmidt & Gonzalez', 'PSC 0273, Box 1135', 'andrea66@cooley-johnston.com', '2b@Z1XgbSA', 'https://www.bradshaw.biz/'),
 ('Boyd & Jones', '54504 Emily Ln, NE', 'vbailey@wilson.com', '+4eOUGnH#@', 'https://www.velasquez.info/');
@@ -143,7 +143,7 @@ VALUES
 -- Sample data for Users
 INSERT INTO "User"("Name", "LastName", "Password", "Address", "ResumeId", "UserStatus", "Email", "PhoneNumber")
 VALUES 
-('Kelly', 'Li', 'J4hPbiBs&8', '81216 Daniels St, NY', NULL, 'inactive', 'joelklein@gmail.com', '+1-903-117-7859'), -- c4a9abc88aaafdccf1f4d621ce87e7dc85a6a75a29cac1de0a9070500c519d21
+('Kelly', 'Li', 'c4a9abc88aaafdccf1f4d621ce87e7dc85a6a75a29cac1de0a9070500c519d21', '81216 Daniels St, NY', NULL, 'inactive', 'joelklein@gmail.com', '+1-903-117-7859'), -- J4hPbiBs&8
 ('Ashley', 'Smith', 'aH2Kb4!oW', '321 Main St, TX', NULL, 'active', 'ashley.smith@gmail.com', '+1-512-345-6789'),
 ('Chris', 'Brown', 'xR3Tc7^yN', '654 Oak Ave, IL', NULL, 'inactive', 'chris.brown@gmail.com', '+1-217-987-6543'),
 ('Jordan', 'Taylor', 'pQ8Vz!lR5', '987 Pine Rd, CA', NULL, 'active', 'jordan.taylor@gmail.com', '+1-415-765-4321');
