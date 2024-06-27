@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setUserData } from '../../../state/user-reducer/userSlice'
 
 type FormFields = {
     Password: string
@@ -9,6 +11,7 @@ type FormFields = {
 
 export default function EmployerLogin() {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [successLogin, setSuccessLogin] = useState<boolean>(false)
     const {
         register,
@@ -65,9 +68,14 @@ export default function EmployerLogin() {
                 return
             }
 
-            const result = await response.text()
-            localStorage.removeItem('jwtToken')
-            localStorage.setItem('jwtToken', result)
+            const result = await response.json()
+            dispatch(
+                setUserData({
+                    jwt: result.token,
+                    role: 'employer',
+                    data: result.company,
+                })
+            )
             console.log('Success:', result)
             setSuccessLogin(true)
             await new Promise((resolve) => setTimeout(resolve, 1500))

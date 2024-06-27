@@ -8,11 +8,20 @@ import Companies from './pages/companies/Companies.tsx'
 import MySalary from './pages/my-salary/MySalary.tsx'
 import ForEmployer from './pages/for-employer/ForEmployer.tsx'
 import PostAJob from './pages/post-job/PostAJob.tsx'
-import JobApplication from './pages/job-application/JobApplication.tsx'
+import JobApplication from './pages/home/JobApplication.tsx'
 import CandidateLogin from './pages/auth/candidate/CandidateLogin.tsx'
 import CandidateRegister from './pages/auth/candidate/CandidateRegister.tsx'
 import EmployerLogin from './pages/auth/employer/EmployerLogin.tsx'
 import EmployerRegister from './pages/auth/employer/EmployerRegister.tsx'
+import AuthProvider from './pages/auth/AuthProvider.tsx'
+import ProtectedRouteCan from './pages/auth/candidate/ProtectedRouteCan.tsx'
+import ProtectedRouteEmp from './pages/auth/employer/ProtectedRouteEmp.tsx'
+import { RootState } from './state/store.ts'
+import { useSelector } from 'react-redux'
+import Profile from './pages/profile/Profile.tsx'
+import CandidateProfile from './pages/profile/candidate/CandidateProfile.tsx'
+import EmployerProfile from './pages/profile/employer/EmployerProfile.tsx'
+import About from './pages/about/About.tsx'
 
 const router = createBrowserRouter([
     {
@@ -34,16 +43,50 @@ const router = createBrowserRouter([
             },
             {
                 path: 'employers',
-                element: <ForEmployer />,
+                element: (
+                    <ProtectedRouteEmp>
+                        <ForEmployer />
+                    </ProtectedRouteEmp>
+                ),
             },
             {
                 path: 'post-job',
-                element: <PostAJob />,
+                element: (
+                    <ProtectedRouteEmp>
+                        <PostAJob />
+                    </ProtectedRouteEmp>
+                ),
+            },
+            {
+                path: 'profile',
+                element: <Profile />,
+                children: [
+                    {
+                        path: 'candidate',
+                        element: (
+                            <ProtectedRouteCan>
+                                <CandidateProfile />
+                            </ProtectedRouteCan>
+                        ),
+                    },
+                    {
+                        path: 'employer',
+                        element: (
+                            <ProtectedRouteEmp>
+                                <EmployerProfile />
+                            </ProtectedRouteEmp>
+                        ),
+                    },
+                ],
             },
             {
                 path: 'applications/company/:applicationId',
                 element: <JobApplication />,
             },
+            {
+                path: 'about',
+                element: <About />
+            }
         ],
     },
     {
@@ -82,9 +125,16 @@ const router = createBrowserRouter([
 ])
 
 export default function App() {
+    const userData = useSelector((state: RootState) => state.userData)
     return (
         <>
-            <RouterProvider router={router} />
+            <AuthProvider
+                isSignedIn={
+                    userData.jwt !== '' && userData.role !== '' ? true : false
+                }
+            >
+                <RouterProvider router={router} />
+            </AuthProvider>
         </>
     )
 }

@@ -45,7 +45,6 @@ export default function CandidateRegister() {
     }
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
-        data.SkillIds = selectedSkills
         console.log(data)
         try {
             const response = await fetch(

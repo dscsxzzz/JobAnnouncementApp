@@ -1,13 +1,28 @@
 import { useState, useEffect, useRef } from 'react'
+import {
+    NavigateOptions,
+    URLSearchParamsInit,
+    useSearchParams,
+} from 'react-router-dom'
+import useMediaQuery from '../../hooks/useMediaQuery.ts'
 
-type Props = {}
+type Props = {
+    setSearchParams: (
+        nextInit?:
+            | URLSearchParamsInit
+            | ((prev: URLSearchParams) => URLSearchParamsInit),
+        navigateOpts?: NavigateOptions
+    ) => void
+}
 
-export default function SearchBar({}: Props) {
+export default function SearchBar({ setSearchParams }: Props) {
     const [selected, setSelected] = useState<boolean>(false)
-    const categories = ['Backend', 'Frontend', 'Fullstack', 'Mobile']
-    const technologies = ['C#', 'Git', 'JavaScript', '.NET']
-    const locations = ['Remote', 'Hybrid', 'Field work', 'Warsaw']
-    const salaries = ['>10k PLN', '>15k PLN', '>20k PLN', '>25k PLN']
+    const [searchParams, setSearch] = useSearchParams()
+    const [searched, setSearched] = useState<string[]>([])
+    const categories = ['Frontend', 'Backend', 'Fullstack', 'DevOps']
+    const skills = ['React', '.NET', 'C#', 'JavaScript']
+    const salaries = ['>5k PLN', '>10k PLN', '>15k PLN', '>20k PLN']
+    const isAboveMediumScreens = useMediaQuery('(min-width: 610px)')
 
     const ref = useRef<HTMLDivElement>(null)
     const ref2 = useRef<HTMLDivElement>(null)
@@ -34,6 +49,37 @@ export default function SearchBar({}: Props) {
         }
     }, [selected])
 
+    useEffect(() => {
+        setSearched([])
+        searchParams.forEach((elem) => setSearched((prev) => [...prev, elem]))
+    }, [searchParams])
+
+    const onClear = () => {
+        setSearched([])
+        setSearchParams(
+            (p) => {
+                p.delete(
+                    'category',
+                )
+                p.delete(
+                    'skills'
+                )
+                p.delete(
+                    'remote'
+                )
+                p.delete(
+                    'hybrid'
+                )
+                p.delete(
+                    "sallaryMin"
+                )
+                return p
+
+            },
+            { replace: true }
+        )
+    }
+
     return (
         <>
             <div className="flex justify-center p-2">
@@ -47,104 +93,190 @@ export default function SearchBar({}: Props) {
                         }
                     }}
                 >
-                    <input
-                        type="text"
-                        placeholder="15673 offers"
-                        className="p-2 rounded-md w-full max-w-xl bg-white text-gray-800 focus:outline-none"
-                    />
+                    <div className="p-2 rounded-md rounded-bl-md w-full max-w-xl bg-white text-gray-800 focus:outline-none">
+                        Filters
+                    </div>
                 </div>
                 {selected && (
-                    <div
-                        ref={ref}
-                        className="absolute mt-10 bg-white py-2 w-[576px] border-2 rounded-md"
-                    >
-                        <div className="p-4">
-                            {/* TODO: try to take last searches from local storage */}
-                            <div className="mb-6">
-                                <h2 className="text-lg font-semibold mb-2">
-                                    Last searches
-                                </h2>
-                                <div className="flex flex-wrap gap-2">
-                                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded cursor-pointer">
-                                        Backend
+                    <>
+                        <div
+                            ref={ref}
+                            className={`${isAboveMediumScreens ? (`w-[576px]`) : (`w-[300px]`)} absolute mt-10 bg-white py-2  border-2 rounded-md`}
+                        >
+                            <div className="p-4">
+                                <div className="mb-6">
+                                    <h2 className="text-lg font-semibold mb-2">
+                                        Searches
+                                    </h2>
+                                    <div className="flex flex-wrap gap-2">
+                                        {searched.map((p, index) => (
+                                            <div key={index} className="bg-purple-100 text-purple-800 px-3 py-1 rounded cursor-pointer">
+                                                {p}
+                                            </div>
+                                        ))}
+                                        <div className="bg-gray-200 text-gray-800 px-3 py-1 rounded cursor-pointer"
+                                            onClick={onClear}
+                                        >
+                                            Clear
+                                        </div>
                                     </div>
-                                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded cursor-pointer">
-                                        C#
+                                </div>
+                                <hr />
+                                <div className="mb-6">
+                                    <h2 className="text-lg font-semibold mb-2">
+                                        Categories
+                                    </h2>
+                                    <div className="flex flex-wrap gap-2">
+                                        {categories.map((category, index) => (
+                                            <div
+                                                key={category}
+                                                className="bg-blue-100 text-blue-800 px-3 py-1 rounded cursor-pointer"
+                                                onClick={() =>
+                                                    setSearchParams(
+                                                        (p) => {
+                                                            p.set(
+                                                                'category',
+                                                                `${index + 1}`
+                                                            )
+                                                            return p
+                                                        },
+                                                        { replace: true }
+                                                    )
+                                                }
+                                            >
+                                                {category}
+                                            </div>
+                                        ))}
                                     </div>
-                                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded cursor-pointer">
-                                        Backend
+                                </div>
+
+                                <div className="mb-6">
+                                    <h2 className="text-lg font-semibold mb-2">
+                                        Technologies
+                                    </h2>
+                                    <div className="flex flex-wrap gap-2">
+                                        {skills.map((tech, index) => (
+                                            <div
+                                                key={tech}
+                                                className="bg-blue-100 text-blue-800 px-3 py-1 rounded cursor-pointer"
+                                                onClick={() =>
+                                                    setSearchParams(
+                                                        (p) => {
+                                                            p.append(
+                                                                'skills',
+                                                                `${index + 1}`
+                                                            )
+                                                            return p
+                                                        },
+                                                        { replace: true }
+                                                    )
+                                                }
+                                            >
+                                                {tech}
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-                            </div>
-                            <hr />
-                            <div className="mb-6">
-                                <h2 className="text-lg font-semibold mb-2">
-                                    Categories
-                                </h2>
-                                <div className="flex flex-wrap gap-2">
-                                    {categories.map((category) => (
-                                        <div
-                                            key={category}
-                                            className="bg-blue-100 text-blue-800 px-3 py-1 rounded cursor-pointer"
-                                        >
-                                            {category}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
 
-                            <div className="mb-6">
-                                <h2 className="text-lg font-semibold mb-2">
-                                    Technologies
-                                </h2>
-                                <div className="flex flex-wrap gap-2">
-                                    {technologies.map((tech) => (
+                                <div className="mb-6">
+                                    <h2 className="text-lg font-semibold mb-2">
+                                        Locations
+                                    </h2>
+                                    <div className="flex flex-wrap gap-2">
                                         <div
-                                            key={tech}
                                             className="bg-blue-100 text-blue-800 px-3 py-1 rounded cursor-pointer"
+                                            onClick={() =>
+                                                setSearchParams(
+                                                    (p) => {
+                                                        p.set(
+                                                            'remote',
+                                                            `${true}`
+                                                        )
+                                                        return p
+                                                    },
+                                                    { replace: true }
+                                                )
+                                            }
                                         >
-                                            {tech}
+                                            Remote
                                         </div>
-                                    ))}
+                                        <div
+                                            className="bg-blue-100 text-blue-800 px-3 py-1 rounded cursor-pointer"
+                                            onClick={() =>
+                                                setSearchParams(
+                                                    (p) => {
+                                                        p.set(
+                                                            'hybrid',
+                                                            `${true}`
+                                                        )
+                                                        return p
+                                                    },
+                                                    { replace: true }
+                                                )
+                                            }
+                                        >
+                                            Hybrid
+                                        </div>
+                                        <div
+                                            className="bg-gray-200 text-gray-800 px-3 py-1 rounded cursor-pointer"
+                                            onClick={() => (
+                                                setSearchParams(
+                                                    (p) => {
+                                                        p.set(
+                                                            'hybrid',
+                                                            `${false}`
+                                                        )
+                                                        return p
+                                                    },
+                                                    { replace: true }
+                                                ),
+                                                setSearchParams(
+                                                    (p) => {
+                                                        p.set(
+                                                            'remote',
+                                                            `${false}`
+                                                        )
+                                                        return p
+                                                    },
+                                                    { replace: true }
+                                                )
+                                            )}
+                                        >
+                                            On Site
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="mb-6">
-                                <h2 className="text-lg font-semibold mb-2">
-                                    Locations
-                                </h2>
-                                <div className="flex flex-wrap gap-2">
-                                    {locations.map((location) => (
-                                        <div
-                                            key={location}
-                                            className="bg-blue-100 text-blue-800 px-3 py-1 rounded cursor-pointer"
-                                        >
-                                            {location}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="mb-6">
-                                <h2 className="text-lg font-semibold mb-2">
-                                    Salaries
-                                </h2>
-                                <div className="flex flex-wrap gap-2">
-                                    {salaries.map((salary) => (
-                                        <div
-                                            key={salary}
-                                            className="bg-blue-100 text-blue-800 px-3 py-1 rounded cursor-pointer"
-                                        >
-                                            {salary}
-                                        </div>
-                                    ))}
-                                    <div className="bg-gray-200 text-gray-800 px-3 py-1 rounded flex items-center">
-                                        <span>Custom salary</span>
+                                <div className="mb-6">
+                                    <h2 className="text-lg font-semibold mb-2">
+                                        Salaries
+                                    </h2>
+                                    <div className="flex flex-wrap gap-2">
+                                        {salaries.map((salary, index) => (
+                                            <div
+                                                key={salary}
+                                                className="bg-blue-100 text-blue-800 px-3 py-1 rounded cursor-pointer"
+                                                onClick={() =>
+                                                    setSearchParams(
+                                                        (p) => {
+                                                            p.set(
+                                                                'sallaryMin',
+                                                                `${index === 0 ? 5000 : `${index === 1 ? 10000 : `${index === 2 ? 15000 : 20000}`}`}`
+                                                            )
+                                                            return p
+                                                        },
+                                                        { replace: true }
+                                                    )
+                                                }
+                                            >
+                                                {salary}
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </>
                 )}
             </div>
         </>

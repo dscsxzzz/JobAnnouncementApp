@@ -73,7 +73,7 @@ export default function EmployerRegister() {
             console.log('Success:', result)
             setSuccessRegistration(true)
             await new Promise((resolve) => setTimeout(resolve, 1500))
-            navigate('/auth/login/company')
+            navigate('/auth/login/employer')
         } catch (error) {
             console.error('Error:', error)
             setError('root', {

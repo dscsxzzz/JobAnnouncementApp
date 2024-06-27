@@ -1,46 +1,39 @@
 import { useState } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import { setUserData } from '../../../state/user-reducer/userSlice'
-import { useDispatch } from 'react-redux'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
-type FormFields = {
+type FormFieldsPass = {
     Password: string
-    Email: string
+    NewPassword: string
 }
 
-type UserData = {
-
+type Props = {
+    jwt: string
 }
 
-export default function CandidateLogin() {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const [successLogin, setSuccessLogin] = useState<boolean>(false)
+export default function EmployerProfileChangePass({ jwt }: Props) {
+    const [successChange, setSuccessChange] = useState<boolean>(false)
     const {
         register,
         handleSubmit,
         setError,
         formState: { errors, isSubmitting },
-    } = useForm<FormFields>()
+    } = useForm<FormFieldsPass>()
 
-    const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    const onSubmitPass: SubmitHandler<FormFieldsPass> = async (data) => {
         console.log(data)
         try {
-            const response = await fetch(
-                'http://localhost:5292/auth/login/user',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                }
-            )
+            const response = await fetch('http://localhost:5292/password-change/company', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${jwt}`,
+                },
+                body: JSON.stringify(data),
+            })
 
             if (!response.ok) {
                 const contentType = response.headers.get('content-type')
-                let errorMessage = 'Login failed'
+                let errorMessage = 'Change password failed'
 
                 if (
                     contentType &&
@@ -52,7 +45,7 @@ export default function CandidateLogin() {
                     if (errorData.errors) {
                         Object.keys(errorData.errors).forEach((field) => {
                             const messages = errorData.errors[field]
-                            setError(field as keyof FormFields, {
+                            setError(field as keyof FormFieldsPass, {
                                 type: 'manual',
                                 message: messages.join(' '),
                             })
@@ -72,15 +65,11 @@ export default function CandidateLogin() {
                 return
             }
 
-            const result = await response.json()
-            dispatch(setUserData({
-                jwt: result.token, role: 'user',
-                data: result.user
-            }))
-            console.log('Success:', result)
-            setSuccessLogin(true)
+            setSuccessChange(true)
             await new Promise((resolve) => setTimeout(resolve, 1500))
-            navigate('/')
+            setSuccessChange(false)
+            const result = await response.text()
+            console.log('Success:', result)
         } catch (error) {
             console.error('Error:', error)
             setError('root', {
@@ -94,34 +83,13 @@ export default function CandidateLogin() {
     }
 
     return (
-        <div className="mx-auto w-1/2">
-            <div className="flex justify-center">
-                <h1 className="text-gray-800 text-4xl font-bold">
-                    Candidate Log In
-                </h1>
-            </div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <input
-                    className="mt-5 w-full rounded-lg bg-gray-800 px-5 py-3 text-white"
-                    type="email"
-                    placeholder="Email"
-                    {...register('Email', {
-                        required: 'This field is required.',
-                        pattern: {
-                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                            message: 'Invalid email address.',
-                        },
-                    })}
-                />
-                {errors.Email && (
-                    <p className="mt-1 text-primary-500">
-                        {errors.Email.message}
-                    </p>
-                )}
+        <>
+            <h1 className="text-gray-800 text-4xl font-bold text-center mt-6">Chage Password</h1>
+            <form onSubmit={handleSubmit(onSubmitPass)}>
                 <input
                     className="mt-5 w-full rounded-lg bg-gray-800 px-5 py-3 text-white"
                     type="password"
-                    placeholder="Password"
+                    placeholder="Old password"
                     {...register('Password', {
                         required: 'This field is required.',
                         minLength: {
@@ -139,26 +107,47 @@ export default function CandidateLogin() {
                         {errors.Password.message}
                     </p>
                 )}
+                <input
+                    className="mt-5 w-full rounded-lg bg-gray-800 px-5 py-3 text-white"
+                    type="password"
+                    placeholder="New Password"
+                    {...register('NewPassword', {
+                        required: 'This field is required.',
+                        minLength: {
+                            value: 10,
+                            message: 'Min length is 10 characters.',
+                        },
+                        maxLength: {
+                            value: 100,
+                            message: 'Max length is 100 characters.',
+                        },
+                    })}
+                />
+                {errors.NewPassword && (
+                    <p className="mt-1 text-primary-500">
+                        {errors.NewPassword.message}
+                    </p>
+                )}
                 <div className="flex justify-center ">
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="mt-5 rounded-lg bg-gray-800 xs:px-20 py-3 transition duration-500 hover:text-black hover:bg-gray-600 px-10"
-                    >
-                        {isSubmitting ? 'Loading...' : 'Log In'}
-                    </button>
-                </div>
-                {errors.root && (
-                    <div className="text-xl rounded-lg bg-red-600 text-white p-2 mt-2">
-                        {errors.root.message}
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="mt-5 rounded-lg bg-gray-800 xs:px-20 py-3 transition duration-500 hover:text-black hover:bg-gray-600 px-10"
+                        >
+                            {isSubmitting ? 'Loading...' : 'Update'}
+                        </button>
                     </div>
-                )}
-                {successLogin && (
-                    <div className="text-xl rounded-lg bg-green-600 text-white p-2 mt-2 text-center">
-                        Successfully!
-                    </div>
-                )}
+                    {errors.root && (
+                        <div className="text-xl rounded-lg bg-red-600 text-white p-2 mt-2">
+                            {errors.root.message}
+                        </div>
+                    )}
+                    {successChange && (
+                        <div className="text-xl rounded-lg bg-green-600 text-white p-2 mt-2 text-center">
+                            Successfully!
+                        </div>
+                    )}
             </form>
-        </div>
+        </>
     )
 }
