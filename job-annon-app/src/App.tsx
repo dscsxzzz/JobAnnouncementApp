@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import HomeSearch from './pages/home-search/HomeSearch.tsx'
 import Companies from './pages/companies/Companies.tsx'
+import CompanyInfo from './pages/companies/CompanyInfo.tsx'
 import MySalary from './pages/my-salary/MySalary.tsx'
 import ForEmployer from './pages/for-employer/ForEmployer.tsx'
 import PostAJob from './pages/post-job/PostAJob.tsx'
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
             {
                 path: 'about',
                 element: <About />
+            },
+            {
+                path: '/companies/:companyId',
+                element: <CompanyInfo />
             }
         ],
     },

@@ -9,10 +9,6 @@ type FormFields = {
     Email: string
 }
 
-type UserData = {
-
-}
-
 export default function CandidateLogin() {
     const navigate = useNavigate()
     const dispatch = useDispatch()

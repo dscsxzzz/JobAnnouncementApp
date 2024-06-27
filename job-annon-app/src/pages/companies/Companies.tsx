@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 type Props = {}
 
@@ -80,7 +80,7 @@ export default function Companies({}: Props) {
             <div className="flex flex-col min-h-[80vh]">
                 <div className="container mx-auto mt-24 p-4">
                     <h1 className="text-4xl font-bold text-center text-gray-800 mb-10">
-                        Companies {haveJobs ? ('With Jobs') : (`Without Jobs`)}
+                        Companies {haveJobs ? 'With Jobs' : `Without Jobs`}
                     </h1>
                     <button
                         onClick={() => onClick(!haveJobs)}
@@ -92,33 +92,38 @@ export default function Companies({}: Props) {
                     </button>
                     <div className="mt-10 grid gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {companies.map((company) => (
-                            <div
-                                key={company.companyId}
-                                className="bg-white shadow-lg rounded-lg overflow-hidden"
-                            >
-                                <div className="p-5">
-                                    <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                                        {company.name}
-                                    </h2>
-                                    <p className="text-gray-600">
-                                        {company.address}
-                                    </p>
-                                    <p className="text-gray-600">
-                                        {company.email}
-                                    </p>
-                                    <a
-                                        href={company.linkToSite}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-500 hover:underline mt-2 block"
+                            <>
+                                <Link to={`/companies/${company.companyId}`}>
+                                    <div
+                                        key={company.companyId}
+                                        className="bg-white shadow-lg rounded-lg overflow-hidden"
                                     >
-                                        Visit Site
-                                    </a>
-                                    <p className="mt-2 text-gray-700">
-                                        {company.availableJobs} jobs available
-                                    </p>
-                                </div>
-                            </div>
+                                        <div className="p-5">
+                                            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                                                {company.name}
+                                            </h2>
+                                            <p className="text-gray-600">
+                                                {company.address}
+                                            </p>
+                                            <p className="text-gray-600">
+                                                {company.email}
+                                            </p>
+                                            <a
+                                                href={company.linkToSite}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-500 hover:underline mt-2 block"
+                                            >
+                                                Visit Site
+                                            </a>
+                                            <p className="mt-2 text-gray-700">
+                                                {company.availableJobs} jobs
+                                                available
+                                            </p>
+                                        </div>
+                                    </div>
+                                </Link>
+                            </>
                         ))}
                     </div>
                 </div>

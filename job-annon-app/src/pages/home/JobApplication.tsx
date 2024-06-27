@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../state/store'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -276,6 +276,11 @@ export default function JobApplication({}: Props) {
                                             </span>
                                         ))}
                                     </div>
+                                    <Link to={`/companies/${app.companyId}`}>
+                                        <p className="inline-block mx-auto w-30 mt-5 rounded-lg bg-blue-600 text-white xs:px-20 py-3 transition duration-500 hover:text-white hover:bg-blue-800 px-10">
+                                            View Company
+                                        </p>
+                                    </Link>
                                 </div>
                             </div>
                         </>
@@ -429,10 +434,10 @@ export default function JobApplication({}: Props) {
                                 </div>
                             )}
                             {successChange && (
-                        <div className="text-xl rounded-lg bg-green-600 text-white p-2 mt-2 text-center">
-                            Successfully!
-                        </div>
-                    )}
+                                <div className="text-xl rounded-lg bg-green-600 text-white p-2 mt-2 text-center">
+                                    Successfully!
+                                </div>
+                            )}
                         </form>
                     </div>
                 )}

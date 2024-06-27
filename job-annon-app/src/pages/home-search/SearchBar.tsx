@@ -17,7 +17,7 @@ type Props = {
 
 export default function SearchBar({ setSearchParams }: Props) {
     const [selected, setSelected] = useState<boolean>(false)
-    const [searchParams, setSearch] = useSearchParams()
+    const [searchParams] = useSearchParams()
     const [searched, setSearched] = useState<string[]>([])
     const categories = ['Frontend', 'Backend', 'Fullstack', 'DevOps']
     const skills = ['React', '.NET', 'C#', 'JavaScript']
@@ -51,30 +51,45 @@ export default function SearchBar({ setSearchParams }: Props) {
 
     useEffect(() => {
         setSearched([])
-        searchParams.forEach((elem) => setSearched((prev) => [...prev, elem]))
+        searchParams.forEach((elem, key) => {
+            if (key === 'category') {
+                setSearched((prev) => [
+                    ...prev,
+                    categories[Number.parseInt(elem) - 1],
+                ])
+            } else if (key === 'skills') {
+                setSearched((prev) => [
+                    ...prev,
+                    skills[Number.parseInt(elem) - 1],
+                ])
+            } else if (key === 'sallaryMin') {
+                setSearched((prev) => [...prev, elem])
+            } else if (key === 'hybrid') {
+                if (elem === 'true') {
+                    setSearched((prev) => [...prev, 'Hybrid'])
+                } else {
+                    setSearched((prev) => [...prev])
+                }
+            } else if (key === 'remote') {
+                if (elem === 'true') {
+                    setSearched((prev) => [...prev, 'Remote'])
+                } else {
+                    setSearched((prev) => [...prev])
+                }
+            }
+        })
     }, [searchParams])
 
     const onClear = () => {
         setSearched([])
         setSearchParams(
             (p) => {
-                p.delete(
-                    'category',
-                )
-                p.delete(
-                    'skills'
-                )
-                p.delete(
-                    'remote'
-                )
-                p.delete(
-                    'hybrid'
-                )
-                p.delete(
-                    "sallaryMin"
-                )
+                p.delete('category')
+                p.delete('skills')
+                p.delete('remote')
+                p.delete('hybrid')
+                p.delete('sallaryMin')
                 return p
-
             },
             { replace: true }
         )
@@ -101,7 +116,7 @@ export default function SearchBar({ setSearchParams }: Props) {
                     <>
                         <div
                             ref={ref}
-                            className={`${isAboveMediumScreens ? (`w-[576px]`) : (`w-[300px]`)} absolute mt-10 bg-white py-2  border-2 rounded-md`}
+                            className={`${isAboveMediumScreens ? `w-[576px]` : `w-[300px]`} absolute mt-10 bg-white py-2  border-2 rounded-md`}
                         >
                             <div className="p-4">
                                 <div className="mb-6">
@@ -110,11 +125,15 @@ export default function SearchBar({ setSearchParams }: Props) {
                                     </h2>
                                     <div className="flex flex-wrap gap-2">
                                         {searched.map((p, index) => (
-                                            <div key={index} className="bg-purple-100 text-purple-800 px-3 py-1 rounded cursor-pointer">
+                                            <div
+                                                key={index}
+                                                className="bg-purple-100 text-purple-800 px-3 py-1 rounded cursor-pointer"
+                                            >
                                                 {p}
                                             </div>
                                         ))}
-                                        <div className="bg-gray-200 text-gray-800 px-3 py-1 rounded cursor-pointer"
+                                        <div
+                                            className="bg-gray-200 text-gray-800 px-3 py-1 rounded cursor-pointer"
                                             onClick={onClear}
                                         >
                                             Clear
