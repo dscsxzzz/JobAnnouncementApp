@@ -13,9 +13,6 @@ public partial class UserUpdateDto : ILinkToEntity<User>
 
     public string LastName { get; set; } = null!;
 
-    [JsonIgnore]
-    public string Password { get; set; } = null!;
-
     public string Address { get; set; } = null!;
 
     public string Email { get; set; } = null!;

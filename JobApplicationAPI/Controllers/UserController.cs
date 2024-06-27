@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using WebCommon.Database;
 
 namespace JobApplicationAPI.Controllers;
@@ -49,14 +51,9 @@ public class UserController : ControllerWithDatabaseAccess
 
             var skills = await _service
             .ReadManyNoTracked<Skill>()
-            .Where(x => userDto.SkillIds.Contains(x.SkillId))
-            .AsTracking()
+            .Where(x => userDto.SkillIds.Contains(x.SkillId) && !x.Users.Select(x => x.UserId).Contains(userDto.UserId))
             .ToListAsync();
 
-            if (skills.Count != userDto.SkillIds.Count)
-                return Conflict("Not All skill id`s were found");
-
-            userDto.Password = HasherService.HashPassword(userDto.Password);
             userDto.Skills = skills;
 
             await _service.UpdateAndSaveAsync(userDto);

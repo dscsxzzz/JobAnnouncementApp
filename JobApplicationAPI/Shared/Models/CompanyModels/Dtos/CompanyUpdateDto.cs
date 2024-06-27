@@ -9,9 +9,6 @@ public partial class CompanyUpdateDto : ILinkToEntity<Company>
     [JsonIgnore]
     public int CompanyId { get; set; }
 
-    [JsonIgnore]
-    public string Password { get; set; } = null!;
-
     public string Name { get; set; } = null!;
 
     public string Address { get; set; } = null!;

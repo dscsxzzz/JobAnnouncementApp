@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using JobApplicationAPI.Shared.Models.JobPostingModels;
 using JobApplicationAPI.Shared.Models.UserModels;
 

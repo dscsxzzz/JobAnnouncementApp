@@ -7,9 +7,6 @@ public partial class CompanyUpdateDtoValidator : AbstractValidator<CompanyUpdate
 {
     public CompanyUpdateDtoValidator()
     {
-        RuleFor(x => x.CompanyId)
-            .GreaterThan(0);
-
         RuleFor(x => x.Name)
             .NotEmpty()
             .MaximumLength(20);

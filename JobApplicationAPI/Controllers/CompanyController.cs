@@ -1,6 +1,7 @@
 using GenericServices;
 using JobApplicationAPI.Services;
 using JobApplicationAPI.Shared.Database;
+using JobApplicationAPI.Shared.Models.CompanyModels;
 using JobApplicationAPI.Shared.Models.CompanyModels.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,5 +50,24 @@ public class CompanyController : ControllerWithDatabaseAccess
             .ReadSingleAsync<CompanyReadFullForJobSeekersDto>(companyId);
 
         return Ok(company);
+    }
+
+    [Authorize(Roles = "Company")]
+    [HttpPut]
+    public async Task<ActionResult<List<CompanyReadDto>>> UpdateCompanyAsync(
+        [FromBody] CompanyUpdateDto companyUpdateDto
+    )
+    {
+        string bearer = HttpContext.Request.Headers["Authorization"];
+
+        int companyId = JwtService.GetJwtUserIdClaim(bearer);
+
+        var company = await _service.ReadSingleAsync<Company>(companyId);
+
+        companyUpdateDto.CompanyId = company.CompanyId;
+
+        await _service.UpdateAndSaveAsync(companyUpdateDto);
+
+        return NoContent();
     }
 }

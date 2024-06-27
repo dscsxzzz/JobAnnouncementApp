@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using JobApplicationAPI.Shared.Database;
 using JobApplicationAPI.Shared.Models.UserModels.Dtos;
+using System.Text.Json.Serialization;
 
 namespace JobApplicationAPI.Program;
 
