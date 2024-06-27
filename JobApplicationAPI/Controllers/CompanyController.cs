@@ -40,7 +40,6 @@ public class CompanyController : ControllerWithDatabaseAccess
         return Ok(companies);
     }
 
-    [Authorize]
     [HttpGet("{companyId}")]
     public async Task<ActionResult<List<CompanyReadDto>>> GetCompanyAsync(
         [FromRoute] int companyId
