@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>poland-4</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Offer" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Offer---choose-region---bar" transform="translate(-1053.000000, -770.000000)" fill-rule="nonzero">
+            <g id="Choose-region" transform="translate(0.000000, 740.000000)">
+                <g id="poland" transform="translate(1035.000000, 16.000000)">
+                    <g id="poland-4" transform="translate(18.000000, 14.000000)">
+                        <path d="M27.4052321,19.9866667 L39.9727426,19.9866667 C39.9727426,8.9478481 31.024557,0 19.9860759,0 C25.5048101,0 27.4059072,9.99367089 27.4052321,19.9866667 Z" id="Path" fill="#E4E4E4"></path>
+                        <path d="M0,19.9866667 L28.2642195,19.9866667 C28.2648945,9.99367089 25.5048101,0 19.9860759,0 C8.94818565,0 0,8.9478481 0,19.9866667 Z" id="Path" fill="#F3F4F5"></path>
+                        <path d="M26.9848945,19.9866667 C26.9848945,29.9796624 25.5051477,39.9727426 19.9860759,39.9727426 C31.0246414,39.9727426 39.9727426,31.024557 39.9727426,19.9866667 L26.9848945,19.9866667 Z" id="Path" fill="#D84141"></path>
+                        <path d="M28.2642194,19.9866667 L0,19.9866667 C0,31.024557 8.94818565,39.9727426 19.9860759,39.9727426 C25.5048101,39.9727426 28.2642194,29.9797468 28.2642194,19.9866667 Z" id="Path" fill="#DC4D4E"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
