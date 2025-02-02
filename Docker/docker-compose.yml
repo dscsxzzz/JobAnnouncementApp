@@ -19,11 +19,21 @@ services:
 
   my-aspnet-app:
     build:
-      context: ../JobApplicationAPI
+      context: ../backend
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - my-aspnet-app
       - postgres
 volumes:
   database-postgresql:

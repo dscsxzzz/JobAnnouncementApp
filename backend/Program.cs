@@ -34,6 +34,15 @@ public class Program
             .AddValidatorsFromAssemblyContaining(
                 typeof(UserReadDto)
             );
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
 
         builder.Services.AddAuthentication(options =>
         {
@@ -71,7 +80,8 @@ public class Program
             options.AddPolicy("UserOnly", policy => policy.RequireRole("JobSeeker").RequireAuthenticatedUser());
             options.AddPolicy("CompanyOnly", policy => policy.RequireRole("Company").RequireAuthenticatedUser());
         });
-
+        var port = Environment.GetEnvironmentVariable("SERVICE_PORT") ?? "8080";
+        builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
         var app = builder.Build();
 
@@ -81,9 +91,8 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
         app.UseHttpsRedirection();
-
+        app.UseCors();
         app.UseAuthorization();
 
         app.MapControllers();

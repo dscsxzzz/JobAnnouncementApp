@@ -24,7 +24,7 @@ export default function EmployerLogin() {
         console.log(data)
         try {
             const response = await fetch(
-                'http://localhost:5292/auth/login/company',
+                'http://localhost:8080/auth/login/company',
                 {
                     method: 'POST',
                     headers: {
