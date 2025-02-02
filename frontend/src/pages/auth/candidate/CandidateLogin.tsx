@@ -10,6 +10,7 @@ type FormFields = {
 }
 
 export default function CandidateLogin() {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [successLogin, setSuccessLogin] = useState<boolean>(false)
@@ -24,7 +25,7 @@ export default function CandidateLogin() {
         console.log(data)
         try {
             const response = await fetch(
-                'http://localhost:5292/auth/login/user',
+                `${apiUrl}/auth/login/user`,
                 {
                     method: 'POST',
                     headers: {

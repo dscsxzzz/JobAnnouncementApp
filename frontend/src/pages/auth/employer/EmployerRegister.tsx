@@ -11,6 +11,7 @@ type FormFields = {
 }
 
 export default function EmployerRegister() {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const [successRegistration, setSuccessRegistration] = useState<boolean>(false)
     const navigate = useNavigate()
     const {
@@ -25,7 +26,7 @@ export default function EmployerRegister() {
         console.log(data)
         try {
             const response = await fetch(
-                'http://localhost:5292/auth/register/company',
+                `${apiUrl}/auth/register/company`,
                 {
                     method: 'POST',
                     headers: {

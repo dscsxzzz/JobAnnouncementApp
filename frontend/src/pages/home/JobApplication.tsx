@@ -50,6 +50,7 @@ type FormFields = {
 }
 
 export default function JobApplication({}: Props) {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const [applications, setApplications] = useState<JobPostApp[]>([])
     const userData = useSelector((state: RootState) => state.userData)
     const [apply, setApply] = useState<boolean>(false)
@@ -153,7 +154,7 @@ export default function JobApplication({}: Props) {
         }
         console.log(parsedData)
         try {
-            const response = await fetch('http://localhost:5292/applications', {
+            const response = await fetch(`${apiUrl}/applications`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

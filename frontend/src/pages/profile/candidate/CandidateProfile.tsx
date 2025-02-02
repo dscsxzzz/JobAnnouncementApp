@@ -165,6 +165,7 @@ type FormFields = {
 }
 
 export default function CandidateProfile({}: Props) {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const [searchParams, setSearchParams] = useSearchParams({ page: '1' })
     const [applications, setApplications] = useState<ApplicationData[]>([])
     const userData = useSelector((state: RootState) => state.userData)
@@ -191,7 +192,7 @@ export default function CandidateProfile({}: Props) {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:5292/applications/user?page=${page}`, {
+        fetch(`${apiUrl}/applications/user?page=${page}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${userData.jwt}`,
@@ -235,7 +236,7 @@ export default function CandidateProfile({}: Props) {
         console.log(data)
         console.log(selectedSkills)
         try {
-            const response = await fetch('http://localhost:5292/users', {
+            const response = await fetch(`${apiUrl}/users`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

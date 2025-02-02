@@ -49,6 +49,7 @@ type FormFields = {
 }
 
 export default function PostAJob({}: Props) {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const [selectedSkills, setSelectedSkills] = useState<number[]>([])
     const [selectedCategory, setSelectedCategory] = useState<number>(0)
     const [selectedExperience, setSelectedExperience] = useState<number>(0)
@@ -108,7 +109,7 @@ export default function PostAJob({}: Props) {
         }
         console.log(parsedData)
         try {
-            const response = await fetch('http://localhost:5292/job-postings', {
+            const response = await fetch(`${apiUrl}/job-postings`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

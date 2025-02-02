@@ -105,6 +105,7 @@ type JobPosting = {
 }
 
 export default function ForEmployer() {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const [searchParams, setSearchParams] = useSearchParams({ page: '1' })
     const [applications, setApplications] = useState<JobPosting[]>([])
     const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({})
@@ -130,7 +131,7 @@ export default function ForEmployer() {
 
     useEffect(() => {
         fetch(
-            `http://localhost:5292/job-postings/my-job-postings?page=${page}`,
+            `${apiUrl}/job-postings/my-job-postings?page=${page}`,
             {
                 method: 'GET',
                 headers: {
@@ -272,7 +273,7 @@ export default function ForEmployer() {
         console.log(
             `Application ID: ${applicationId}, New Status ID: ${newStatusId}`
         )
-        fetch(`http://localhost:5292/applications`, {
+        fetch(`${apiUrl}/applications`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

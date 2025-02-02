@@ -13,6 +13,7 @@ type FormFields = {
 }
 
 export default function EmployerProfile() {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const userData = useSelector((state: RootState) => state.userData)
     const [successChange, setSuccessChange] = useState<boolean>(false)
     const dispatch = useDispatch()
@@ -34,7 +35,7 @@ export default function EmployerProfile() {
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
         console.log(data)
         try {
-            const response = await fetch('http://localhost:5292/companies', {
+            const response = await fetch(`${apiUrl}/companies`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

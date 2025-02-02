@@ -11,6 +11,7 @@ type Props = {
 }
 
 export default function EmployerProfileChangePass({ jwt }: Props) {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const [successChange, setSuccessChange] = useState<boolean>(false)
     const {
         register,
@@ -22,7 +23,7 @@ export default function EmployerProfileChangePass({ jwt }: Props) {
     const onSubmitPass: SubmitHandler<FormFieldsPass> = async (data) => {
         console.log(data)
         try {
-            const response = await fetch('http://localhost:5292/password-change/company', {
+            const response = await fetch(`${apiUrl}/password-change/company`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

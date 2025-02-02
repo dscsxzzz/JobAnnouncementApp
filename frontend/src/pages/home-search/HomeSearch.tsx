@@ -25,6 +25,7 @@ type JobsProp = {
 }
 
 export default function HomeSearch({}: Props) {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const [searchParams, setSearchParams] = useSearchParams()
     const page = searchParams.get('page')
     const [inputPage, setInputPage] = useState(searchParams.get('page') || '1')
@@ -76,7 +77,7 @@ export default function HomeSearch({}: Props) {
             )
             .join('&')
 
-        const url = `http://localhost:5292/job-postings?${queryString}`
+        const url = `${apiUrl}/job-postings?${queryString}`
 
         console.log(url)
 
