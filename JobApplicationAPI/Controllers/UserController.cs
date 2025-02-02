@@ -1,14 +1,23 @@
 using GenericServices;
+using JobApplicationAPI.Services;
+using JobApplicationAPI.Services.ListExtension;
 using JobApplicationAPI.Shared.Database;
+using JobApplicationAPI.Shared.Models.Entities;
+using JobApplicationAPI.Shared.Models.UserModels;
+using JobApplicationAPI.Shared.Models.UserModels.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Models.Dtos;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using WebCommon.Database;
+using JobApplicationAPI.Shared.Models;
 
 namespace JobApplicationAPI.Controllers;
 
-[Authorize(Policy = "UserOnly")]
 [ApiController]
 [Route("users")]
 public class UserController : ControllerWithDatabaseAccess
@@ -20,35 +29,81 @@ public class UserController : ControllerWithDatabaseAccess
         _service = service;
     }
 
-
-    [HttpGet]
-    public async Task<ActionResult<List<UserReadDto>>> ListUsersAsync(
-        [FromQuery] string? name, [FromQuery] List<int>? skills,
-        [FromQuery] int page = 1
+    [Authorize]
+    [HttpPut]
+    public async Task<ActionResult<UserUpdateDto>> UpdateUserAsync(
+        [FromBody] UserUpdateDto userDto
     )
     {
-        List<UserReadDto> users = new();
-        if (!string.IsNullOrEmpty(name))
-            users = await _service
-                .ReadManyNoTracked<UserReadDto>()
-                .Skip((page - 1) * 10)
-                .Take(10)
-                .Where(
-                    user => (user.Name.Contains(name) ||
-                    user.LastName.Contains(name))
-                )
-                .ToListAsync();
-        else
-            users = await _service
-                .ReadManyNoTracked<UserReadDto>()
-                .Skip((page - 1) * 10)
-                .Take(10)
-                .ToListAsync();
+        try
+        {
+            string bearer = HttpContext.Request.Headers["Authorization"];
+
+            int userId = JwtService.GetJwtUserIdClaim(bearer);
+
+            var user = await _service
+                .ReadSingleAsync<UserReadDto>(userId);
+
+            if (user == default)
+                return NotFound("User with speicified id not found.");
 
 
-        MongoDbFileService db = new MongoDbFileService();
-        db.TryConnect();
+            userDto.UserId = userId;
 
-        return Ok(users);
+            var skills = await _service
+            .ReadManyNoTracked<Skill>()
+            .Where(x => userDto.SkillIds.Contains(x.SkillId))
+            .ToListAsync();
+
+            foreach (var item in user.Skills.Select(x => x.SkillId))
+            {
+                await _service.DeleteAndSaveAsync<UserSkill>(userId, item);
+            }
+            
+            userDto.Skills = skills;
+
+            await _service.UpdateAndSaveAsync(userDto);
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e);
+        }
+    }
+
+    [Authorize]
+    [HttpDelete("{userId}")]
+    public async Task<ActionResult> DeleteUserAsync(
+        [FromRoute] int userId
+    )
+    {
+        if (userId < 1)
+            return BadRequest("User Id cannot be less than 1.");
+
+        try
+        {
+            string bearer = HttpContext.Request.Headers["Authorization"];
+
+            int userIdClaim = JwtService.GetJwtUserIdClaim(bearer);
+            var isAdmin = JwtService.GetJwtRoleClaim(bearer) == "Admin";
+
+            var user = await _service
+                .ReadSingleAsync<UserReadDto>(userId);
+
+            if (user == default)
+                return NotFound("User with specified id not found.");
+
+            if (userId == userIdClaim || !isAdmin)
+                return StatusCode(403, "You cannot access this.");
+
+            await _service.DeleteAndSaveAsync<User>(userId);
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e);
+        }
     }
 }

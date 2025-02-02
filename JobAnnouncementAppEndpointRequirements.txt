@@ -1,5 +1,11 @@
 baseUrl: localhost
 
+TO DO LIST:
+Add different JobApplicationEndpointsfor owners of the JobPosting and for JobSeekers.
+Add filtering for only AwailableJobPostings.
+Add filtering and pagination for applications.
+Start writing Tests.
+
 //////// User Endpoints://////////////
 [GET]
 baseUrl/users[query params: name?:string, skills?[up to 10]:int, page:int] - 
@@ -25,7 +31,7 @@ baseUrl/auth/{userId}/password-change
 
 Updates User password(Requires JWT)
 
-[PUT]
+[PUT] ------TO DO ---------
 baseUrl/auth/password-forgotten
 
 Updates User password if forgotten(requires e-mail confirmation).
@@ -44,12 +50,11 @@ Register Account
 ////////////////// JobPosting Endpoints://///////////
 
 [GET]
-baseUrl/job-postings[query params: skills?[up to 10 params]:string[drop-down], sallaryMin?:int, listed?:date, location?:string, hybrid?:bool, remote?:bool, page:int]
+baseUrl/job-postings[query params: skills?[up to 10 params]:string[drop-down], sallaryMin?:int, location?:string, hybrid?:bool, remote?:bool, page:int]
 
 returns a List of 20 JobPostingsReadDto
 skills param filters by Skills
 sallaryMin filters by SallaryMin.Returns JobPosting with sallaryMin-sallaryMax range that contains sallaryMin param.
-listed filters by date
 location filters by location
 hybrib/remote filters by hybrid/remote properties
 page gets next page. do not increment manualy. if exceeded the max value return first page with no params.
@@ -64,18 +69,6 @@ returns a JobPostingReadFullDto
 baseUrl/job-postings 
 
 Creates a new JobPosting
-
-(Only User.UserStatus == Recruiter/Employer. Requires JWT)
-[PUT]
-baseUrl/job-postings/{id}
-
-updates a JobPosting info
-
-(Only User.UserStatus == Recruiter/Employer. Requires JWT/Admin Account)
-[DELETE]
-baseUrl/job-postings/{id}
-
-deletes Job Posting.
 
 /////////////////// Application Endpoints: /////////////////////
 

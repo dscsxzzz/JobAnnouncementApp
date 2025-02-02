@@ -1,6 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using JobApplicationAPI.Shared.Models;
+using JobApplicationAPI.Shared.Models.ApplicationModels;
+using JobApplicationAPI.Shared.Models.BenefitModels;
+using JobApplicationAPI.Shared.Models.CompanyModels;
 using JobApplicationAPI.Shared.Models.Entities;
+using JobApplicationAPI.Shared.Models.JobPostingModels;
+using JobApplicationAPI.Shared.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobApplicationAPI.Shared.Database;
@@ -28,8 +32,6 @@ public partial class JobAppContext : DbContext
 
     public virtual DbSet<Experience> Experiences { get; set; }
 
-    public virtual DbSet<JobBenefit> JobBenefits { get; set; }
-
     public virtual DbSet<JobPosting> JobPostings { get; set; }
 
     public virtual DbSet<Skill> Skills { get; set; }
@@ -39,6 +41,7 @@ public partial class JobAppContext : DbContext
     public virtual DbSet<UserSkill> UserSkills { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=localhost;Database=JobApp;Username=postgres;Password=test");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -79,6 +82,24 @@ public partial class JobAppContext : DbContext
             entity.Property(e => e.StatusName).HasMaxLength(20);
         });
 
+        modelBuilder.Entity<UserSkill>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.SkillId }).HasName("UserSkill_pkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.userSkills)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("UserSkill_UserId_fkey");
+
+            entity.HasOne(d => d.Skill).WithMany(p => p.userSkills)
+                .HasForeignKey(d => d.SkillId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("UserSkill_SkillId_fkey");
+
+            entity.ToTable("UserSkill");
+        });
+
+
         modelBuilder.Entity<Benefit>(entity =>
         {
             entity.HasKey(e => e.BenefitId).HasName("Benefit_pkey");
@@ -118,60 +139,11 @@ public partial class JobAppContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(7);
         });
 
-        modelBuilder.Entity<JobBenefit>(entity =>
-        {
-            entity.HasKey(e => e.JobBenefitId).HasName("JobBenefit_pkey");
-
-            entity.ToTable("JobBenefit");
-
-            entity.HasOne(d => d.Benefit1).WithMany(p => p.JobBenefitBenefit1)
-                .HasForeignKey(d => d.BenefitId1)
-                .HasConstraintName("JobBenefit_BenefitId1_fkey");
-
-            entity.HasOne(d => d.Benefit10).WithMany(p => p.JobBenefitBenefit10)
-                .HasForeignKey(d => d.BenefitId10)
-                .HasConstraintName("JobBenefit_BenefitId10_fkey");
-
-            entity.HasOne(d => d.Benefit2).WithMany(p => p.JobBenefitBenefit2)
-                .HasForeignKey(d => d.BenefitId2)
-                .HasConstraintName("JobBenefit_BenefitId2_fkey");
-
-            entity.HasOne(d => d.Benefit3).WithMany(p => p.JobBenefitBenefit3)
-                .HasForeignKey(d => d.BenefitId3)
-                .HasConstraintName("JobBenefit_BenefitId3_fkey");
-
-            entity.HasOne(d => d.Benefit4).WithMany(p => p.JobBenefitBenefit4)
-                .HasForeignKey(d => d.BenefitId4)
-                .HasConstraintName("JobBenefit_BenefitId4_fkey");
-
-            entity.HasOne(d => d.Benefit5).WithMany(p => p.JobBenefitBenefit5)
-                .HasForeignKey(d => d.BenefitId5)
-                .HasConstraintName("JobBenefit_BenefitId5_fkey");
-
-            entity.HasOne(d => d.Benefit6).WithMany(p => p.JobBenefitBenefit6)
-                .HasForeignKey(d => d.BenefitId6)
-                .HasConstraintName("JobBenefit_BenefitId6_fkey");
-
-            entity.HasOne(d => d.Benefit7).WithMany(p => p.JobBenefitBenefit7)
-                .HasForeignKey(d => d.BenefitId7)
-                .HasConstraintName("JobBenefit_BenefitId7_fkey");
-
-            entity.HasOne(d => d.Benefit8).WithMany(p => p.JobBenefitBenefit8)
-                .HasForeignKey(d => d.BenefitId8)
-                .HasConstraintName("JobBenefit_BenefitId8_fkey");
-
-            entity.HasOne(d => d.Benefit9).WithMany(p => p.JobBenefitBenefit9)
-                .HasForeignKey(d => d.BenefitId9)
-                .HasConstraintName("JobBenefit_BenefitId9_fkey");
-        });
-
         modelBuilder.Entity<JobPosting>(entity =>
         {
             entity.HasKey(e => e.JobPostingId).HasName("JobPosting_pkey");
 
             entity.ToTable("JobPosting");
-
-            entity.HasIndex(e => e.UserSkillId, "JobPosting_UserSkillId_key").IsUnique();
 
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.Location).HasMaxLength(20);
@@ -192,20 +164,39 @@ public partial class JobAppContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("JobPosting_ExperienceId_fkey");
 
-            entity.HasOne(d => d.JobBenefit).WithMany(p => p.JobPostings)
-                .HasForeignKey(d => d.JobBenefitId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("JobPosting_JobBenefitId_fkey");
+            entity.HasMany(d => d.Benefits).WithMany(p => p.JobPostings)
+                .UsingEntity<Dictionary<string, object>>(
+                    "JobPostingBenefit",
+                    r => r.HasOne<Benefit>().WithMany()
+                        .HasForeignKey("BenefitId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("JobPostingBenefit_BenefitId_fkey"),
+                    l => l.HasOne<JobPosting>().WithMany()
+                        .HasForeignKey("JobPostingId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("JobPostingBenefit_JobPostingId_fkey"),
+                    j =>
+                    {
+                        j.HasKey("JobPostingId", "BenefitId").HasName("JobPostingBenefit_pkey");
+                        j.ToTable("JobPostingBenefit");
+                    });
 
-            entity.HasOne(d => d.User).WithMany(p => p.JobPostings)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("JobPosting_UserId_fkey");
-
-            entity.HasOne(d => d.UserSkill).WithOne(p => p.JobPosting)
-                .HasForeignKey<JobPosting>(d => d.UserSkillId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("JobPosting_UserSkillId_fkey");
+            entity.HasMany(d => d.Skills).WithMany(p => p.JobPostings)
+                .UsingEntity<Dictionary<string, object>>(
+                    "JobPostingSkill",
+                    r => r.HasOne<Skill>().WithMany()
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("JobPostingSkill_SkillId_fkey"),
+                    l => l.HasOne<JobPosting>().WithMany()
+                        .HasForeignKey("JobPostingId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("JobPostingSkill_JobPostingId_fkey"),
+                    j =>
+                    {
+                        j.HasKey("JobPostingId", "SkillId").HasName("JobPostingSkill_pkey");
+                        j.ToTable("JobPostingSkill");
+                    });
         });
 
         modelBuilder.Entity<Skill>(entity =>
@@ -215,6 +206,9 @@ public partial class JobAppContext : DbContext
             entity.ToTable("Skill");
 
             entity.Property(e => e.Name).HasMaxLength(20);
+
+            entity.HasMany(d => d.Users).WithMany(p => p.Skills)
+                .UsingEntity<UserSkill>();
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -223,82 +217,15 @@ public partial class JobAppContext : DbContext
 
             entity.ToTable("User");
 
-            entity.HasIndex(e => e.UserSkillId, "User_UserSkillId_key").IsUnique();
-
             entity.Property(e => e.Address).HasMaxLength(20);
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.LastName).HasMaxLength(20);
             entity.Property(e => e.Name).HasMaxLength(20);
             entity.Property(e => e.Password).HasMaxLength(100);
             entity.Property(e => e.PhoneNumber).HasMaxLength(15);
-            entity.Property(e => e.UserStatus).HasMaxLength(10);
 
-            entity.HasOne(d => d.Company).WithMany(p => p.Users)
-                .HasForeignKey(d => d.CompanyId)
-                .HasConstraintName("User_CompanyId_fkey");
-
-            entity.HasOne(d => d.UserSkill).WithOne(p => p.User)
-                .HasForeignKey<User>(d => d.UserSkillId)
-                .HasConstraintName("User_UserSkillId_fkey");
-        });
-
-        modelBuilder.Entity<UserSkill>(entity =>
-        {
-            entity.HasKey(e => e.UserSkillId).HasName("UserSkill_pkey");
-
-            entity.ToTable("UserSkill");
-
-            entity.HasIndex(e => e.JobPostingId, "UserSkill_JobPostingId_key").IsUnique();
-
-            entity.HasIndex(e => e.UserId, "UserSkill_UserId_key").IsUnique();
-
-            entity.HasOne(d => d.JobPosting).WithOne(p => p.UserSkill)
-                .HasForeignKey<UserSkill>(d => d.JobPostingId)
-                .HasConstraintName("UserSkill_JobPostingId_fkey");
-
-            entity.HasOne(d => d.Skill1).WithMany(p => p.UserSkillSkill1)
-                .HasForeignKey(d => d.SkillId1)
-                .HasConstraintName("UserSkill_SkillId1_fkey");
-
-            entity.HasOne(d => d.Skill10).WithMany(p => p.UserSkillSkill10)
-                .HasForeignKey(d => d.SkillId10)
-                .HasConstraintName("UserSkill_SkillId10_fkey");
-
-            entity.HasOne(d => d.Skill2).WithMany(p => p.UserSkillSkill2)
-                .HasForeignKey(d => d.SkillId2)
-                .HasConstraintName("UserSkill_SkillId2_fkey");
-
-            entity.HasOne(d => d.Skill3).WithMany(p => p.UserSkillSkill3)
-                .HasForeignKey(d => d.SkillId3)
-                .HasConstraintName("UserSkill_SkillId3_fkey");
-
-            entity.HasOne(d => d.Skill4).WithMany(p => p.UserSkillSkill4)
-                .HasForeignKey(d => d.SkillId4)
-                .HasConstraintName("UserSkill_SkillId4_fkey");
-
-            entity.HasOne(d => d.Skill5).WithMany(p => p.UserSkillSkill5)
-                .HasForeignKey(d => d.SkillId5)
-                .HasConstraintName("UserSkill_SkillId5_fkey");
-
-            entity.HasOne(d => d.Skill6).WithMany(p => p.UserSkillSkill6)
-                .HasForeignKey(d => d.SkillId6)
-                .HasConstraintName("UserSkill_SkillId6_fkey");
-
-            entity.HasOne(d => d.Skill7).WithMany(p => p.UserSkillSkill7)
-                .HasForeignKey(d => d.SkillId7)
-                .HasConstraintName("UserSkill_SkillId7_fkey");
-
-            entity.HasOne(d => d.Skill8).WithMany(p => p.UserSkillSkill8)
-                .HasForeignKey(d => d.SkillId8)
-                .HasConstraintName("UserSkill_SkillId8_fkey");
-
-            entity.HasOne(d => d.Skill9).WithMany(p => p.UserSkillSkill9)
-                .HasForeignKey(d => d.SkillId9)
-                .HasConstraintName("UserSkill_SkillId9_fkey");
-            
-            entity.HasOne(d => d.User).WithOne(p => p.UserSkill)
-                .HasForeignKey<UserSkill>(d => d.UserId)
-                .HasConstraintName("UserSkill_UserId_fkey");
+            entity.HasMany(d => d.Skills).WithMany(p => p.Users)
+                .UsingEntity<UserSkill>();
         });
 
         OnModelCreatingPartial(modelBuilder);
