@@ -1,4 +1,3 @@
-
 type ApplicationProp = {
     app: {
         applicationId: number
@@ -71,24 +70,45 @@ type ApplicationProp = {
 }
 
 export default function EmployerProfileApplication({ app }: ApplicationProp) {
+    const statusColors: Record<string, string> = {
+        'Sent': 'bg-blue-100 text-blue-800',
+        'Opened': 'bg-green-100 text-green-800',
+        'Rejected': 'bg-red-100 text-red-800',
+        'Offer': 'bg-yellow-100 text-yellow-800',
+    }
+
+    const statusClass = statusColors[app.applicationStatus.statusName] || 'bg-gray-100 text-gray-800'
+
     return (
-        <div className="border p-4 rounded-lg shadow-lg mb-4">
-            <h4 className="text-lg font-semibold mb-2">{app.user.name} {app.user.lastName}</h4>
-            <p className="text-gray-600 mb-2 font-bold">Status: {app.applicationStatus.statusName}</p>
-            <p className="text-gray-600 mb-2">Email: {app.user.email}</p>
-            <p className="text-gray-600 mb-2">Phone: {app.user.phoneNumber}</p>
-            <p className="text-gray-600 mb-2">Address: {app.user.address}</p>
-            <p className="text-gray-600 mb-2">Desired Salary: ${app.desiredSallaryMin} - ${app.desiredSallaryMax}</p>
-            <p className="text-gray-600 mb-2">Experience Years: {app.experienceYears}</p>
-            <p className="text-gray-600 mb-2">When Can Start: {app.whenCanStart}</p>
-            <p className="text-gray-600 mb-2">Previous Workplace: {app.previousWorkPlace}</p>
-            <p className="text-gray-600 mb-2">Message to Recruiter: {app.messageToRecruiter}</p>
-            <h5 className="text-md font-semibold mb-2">Skills:</h5>
-            <ul className="list-disc list-inside text-gray-600">
-                {app.user.skills.map((skill) => (
-                    <li key={skill.skillId}>{skill.name}</li>
-                ))}
-            </ul>
-        </div>
+      <div>
+        <h4 className="text-lg font-semibold mb-2">
+          {app.user.name} {app.user.lastName}
+        </h4>
+        <p className="mb-2 font-bold">
+          Status:{' '}
+          <span
+            className={`px-2 inline-flex text-l leading-5 font-semibold rounded-full ${statusClass}`}
+          >
+            {app.applicationStatus.statusName}
+          </span>
+        </p>
+        <p className="text-gray-600 mb-2">Email: {app.user.email}</p>
+        <p className="text-gray-600 mb-2">Phone: {app.user.phoneNumber}</p>
+        <p className="text-gray-600 mb-2">Address: {app.user.address}</p>
+        <p className="text-gray-600 mb-2">
+          Desired Salary: ${app.desiredSallaryMin} - ${app.desiredSallaryMax}
+        </p>
+        <p className="text-gray-600 mb-2">Experience Years: {app.experienceYears}</p>
+        <p className="text-gray-600 mb-2">When Can Start: {app.whenCanStart}</p>
+        <p className="text-gray-600 mb-2">Previous Workplace: {app.previousWorkPlace}</p>
+        <p className="text-gray-600 mb-2">Message to Recruiter: {app.messageToRecruiter}</p>
+        <h5 className="text-md font-semibold mb-2">Skills:</h5>
+        <ul className="list-disc list-inside text-gray-600">
+          {app.user.skills.map((skill) => (
+            <li key={skill.skillId}>{skill.name}</li>
+          ))}
+        </ul>
+      </div>
     )
-}
+  }
+  

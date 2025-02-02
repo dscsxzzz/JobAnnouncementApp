@@ -398,8 +398,9 @@ export default function ForEmployer() {
                                         <EmployerProfileApplication
                                             app={app}
                                         ></EmployerProfileApplication>
+                                        <hr className='mt-3'/>
                                         <div className="mt-2">
-                                            <label className="mr-2 font-medium">
+                                            <label className="mr-2 font-bold text-blue-600">
                                                 Set Status:
                                             </label>
                                             <select
