@@ -13,6 +13,7 @@ type Company = {
 }
 
 export default function Companies({}: Props) {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const [companies, setCompanies] = useState<Company[]>([])
     const [searchParams, setSearchParams] = useSearchParams({
         haveJobs: 'true',
@@ -41,7 +42,7 @@ export default function Companies({}: Props) {
     const onFetch = async () => {
         try {
             const response = await fetch(
-                `http://localhost:5292/companies?haveJobs=${haveJobs}&page=${page}`,
+                `${apiUrl}/companies?haveJobs=${haveJobs}&page=${page}`,
                 {
                     method: 'GET',
                     headers: {

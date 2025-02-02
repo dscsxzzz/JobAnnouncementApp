@@ -20,6 +20,7 @@ type FormFields = {
 }
 
 export default function CandidateRegister() {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const navigate = useNavigate()
     const [successRegistration, setSuccessRegistration] =
         useState<boolean>(false)
@@ -48,7 +49,7 @@ export default function CandidateRegister() {
         console.log(data)
         try {
             const response = await fetch(
-                'http://localhost:5292/auth/register/user',
+                `${apiUrl}/auth/register/user`,
                 {
                     method: 'POST',
                     headers: {

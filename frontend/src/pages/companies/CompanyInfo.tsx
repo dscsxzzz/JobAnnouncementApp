@@ -53,13 +53,14 @@ type CompanyData = {
 }
 
 export default function CompanyInfo({}: Props) {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const params = useParams()
     const [companyData, setCompanyData] = useState<CompanyData | null>(null)
     const [error, setError] = useState<string | null>(null)
     const navigate = useNavigate()
 
     useEffect(() => {
-        fetch(`http://localhost:5292/companies/${params.companyId}`, {
+        fetch(`${apiUrl}/companies/${params.companyId}`, {
             method: 'GET',
         })
             .then((response) => {

@@ -10,6 +10,7 @@ type FormFields = {
 }
 
 export default function EmployerLogin() {
+    const apiUrl = import.meta.env.REACT_APP_API_URL
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [successLogin, setSuccessLogin] = useState<boolean>(false)
@@ -24,7 +25,7 @@ export default function EmployerLogin() {
         console.log(data)
         try {
             const response = await fetch(
-                'http://localhost:8080/auth/login/company',
+                `${apiUrl}/auth/login/company`,
                 {
                     method: 'POST',
                     headers: {
