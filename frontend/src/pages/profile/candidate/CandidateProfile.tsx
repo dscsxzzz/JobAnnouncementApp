@@ -183,6 +183,8 @@ export default function CandidateProfile({}: Props) {
     formState: { errors, isSubmitting },
   } = useForm<FormFields>()
 
+  const buttonStyle = `rounded-lg text-white px-5 py-2 cursor-pointer transition duration-500 hover:text-black hover:bg-gray-600`
+
   const handleSkillToggle = (skillId: number) => {
     setSelectedSkills((prevSelectedSkills) =>
       prevSelectedSkills.includes(skillId)
@@ -191,6 +193,7 @@ export default function CandidateProfile({}: Props) {
     )
   }
 
+  // Fetch applications
   useEffect(() => {
     fetch(`${apiUrl}/applications/user?page=${page}`, {
       method: 'GET',
@@ -215,19 +218,25 @@ export default function CandidateProfile({}: Props) {
       })
   }, [page, userData.jwt])
 
+  // Initialize form values & skills.
   useEffect(() => {
     setValue('name', userData.data.name)
     setValue('lastName', userData.data.lastName)
     setValue('address', userData.data.address)
     setValue('email', userData.data.email)
     setValue('phoneNumber', userData.data.phoneNumber)
-    const skills = userData.data.skills.map(
-      (skill: { skillId: number }) => skill.skillId
-    )
+    // If skills are stored as objects, map them to numbers; if already numbers, use them directly.
+    const skills =
+      userData.data.skills && userData.data.skills.length > 0
+        ? typeof userData.data.skills[0] === 'number'
+          ? userData.data.skills
+          : userData.data.skills.map((skill: { skillId: number }) => skill.skillId)
+        : []
     setSelectedSkills(skills)
     setValue('skillIds', skills)
   }, [userData, setValue])
 
+  // Update the form's "skillIds" when selectedSkills changes.
   useEffect(() => {
     setValue('skillIds', selectedSkills)
   }, [selectedSkills, setValue])
@@ -286,7 +295,7 @@ export default function CandidateProfile({}: Props) {
             address: data.address,
             email: data.email,
             phoneNumber: data.phoneNumber,
-            skills: selectedSkills,
+            skills: selectedSkills, // Now storing an array of numbers
           },
         })
       )
@@ -319,8 +328,6 @@ export default function CandidateProfile({}: Props) {
       setSearchParams({ page: '1' })
     }
   }
-
-  const buttonStyle = `rounded-lg text-white px-5 py-2 cursor-pointer transition duration-500 hover:text-black hover:bg-gray-600`
 
   return (
     <div className="container mx-auto px-4 py-8">
