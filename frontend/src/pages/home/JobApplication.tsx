@@ -92,7 +92,7 @@ export default function JobApplication({}: Props) {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:5292/job-postings/${params.applicationId}`, {
+        fetch(`${apiUrl}/job-postings/${params.applicationId}`, {
             method: 'GET',
         })
             .then((response) => {
